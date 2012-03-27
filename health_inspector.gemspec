@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = HealthInspector::VERSION
   s.authors     = ["Ben Marini"]
   s.email       = ["bmarini@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/bmarini/health_inspector"
   s.summary     = %q{A tool to inspect your chef repo as is compares to what is on your chef server}
   s.description = %q{A tool to inspect your chef repo as is compares to what is on your chef server}
 

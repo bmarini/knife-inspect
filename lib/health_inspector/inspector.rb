@@ -10,7 +10,6 @@ module HealthInspector
 
     def inspect
       Checklists::Cookbooks.run(@context)
-      # Checklists::DataBags.run(self)
     end
   end
 end

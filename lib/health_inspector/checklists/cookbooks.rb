@@ -1,20 +1,25 @@
 module HealthInspector
   module Checklists
 
-    Cookbook = Struct.new(:name, :path, :server_version, :local_version)
+    class Cookbook < Struct.new(:name, :path, :server_version, :local_version)
+      def git_repo?
+        self.path && File.exist?("#{self.path}/.git")
+      end
+    end
 
     class CookbookCheck < Struct.new(:cookbook)
       include Check
-
-      def run_check
-        check
-        return failure
-      end
     end
 
     class CheckLocalCopyExists < CookbookCheck
       def check
         failure( "exists on chef server but not locally" ) if cookbook.path.nil?
+      end
+    end
+
+    class CheckServerCopyExists < CookbookCheck
+      def check
+        failure( "exists locally but not on chef server" ) if cookbook.server_version.nil?
       end
     end
 
@@ -29,11 +34,23 @@ module HealthInspector
 
     class CheckUncommittedChanges < CookbookCheck
       def check
-        if cookbook.path && File.exist?("#{cookbook.path}/.git")
+        if cookbook.git_repo?
           result = `cd #{cookbook.path} && git status -s`
 
           unless result.empty?
             failure "Uncommitted changes:\n#{result.chomp}"
+          end
+        end
+      end
+    end
+
+    class CheckCommitsNotPushedToRemote < CookbookCheck
+      def check
+        if cookbook.git_repo?
+          result = `cd #{cookbook.path} && git status`
+
+          if result =~ /Your branch is ahead of (.+)/
+            failure "ahead of #{$1}"
           end
         end
       end
@@ -100,7 +117,13 @@ module HealthInspector
       end
 
       def cookbook_checks
-        [ CheckLocalCopyExists, CheckVersionsAreTheSame, CheckUncommittedChanges ]
+        [
+          CheckLocalCopyExists,
+          CheckServerCopyExists,
+          CheckVersionsAreTheSame,
+          CheckUncommittedChanges,
+          CheckCommitsNotPushedToRemote
+        ]
       end
     end
   end

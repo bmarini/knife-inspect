@@ -1,12 +1,20 @@
+require "chef/config"
+
 module HealthInspector
   class Context < Struct.new(:repo_path, :config_path)
     def knife_command(subcommnad)
       `cd #{repo_path} && knife #{subcommnad} -c #{config_path}`
     end
 
-    # TODO: read from knife config
     def cookbook_path
-      [ File.join(repo_path, "cookbooks") ]
+      Array( config.cookbook_path )
+    end
+
+    def config
+      @config ||= begin
+        Chef::Config.from_file(config_path)
+        Chef::Config
+      end
     end
   end
 end

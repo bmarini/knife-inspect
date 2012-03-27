@@ -102,7 +102,12 @@ module HealthInspector
       end
 
       def cookbooks_in_repo
-        @context.cookbook_path.map { |path| Dir["#{path}/*"] }.flatten.inject({}) do |hsh, path|
+        @context.cookbook_path.
+          map { |path| Dir["#{path}/*"] }.
+          flatten.
+          select { |path| File.exists?("#{path}/metadata.rb") }.
+          inject({}) do |hsh, path|
+
           name    = File.basename(path)
           version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
 

@@ -11,10 +11,12 @@ module HealthInspector
     end
 
     def config
-      @config ||= begin
-        Chef::Config.from_file(config_path)
-        Chef::Config
-      end
+      @config ||= configure
+    end
+
+    def configure
+      Chef::Config.from_file(config_path)
+      Chef::Config
     end
   end
 end

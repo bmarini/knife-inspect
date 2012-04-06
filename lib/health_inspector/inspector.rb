@@ -6,10 +6,12 @@ module HealthInspector
 
     def initialize(repo_path, config_path)
       @context = Context.new( repo_path, File.join(repo_path, config_path) )
+      @context.configure
     end
 
     def inspect
       Checklists::Cookbooks.run(@context)
+      Checklists::DataBags.run(@context)
     end
   end
 end

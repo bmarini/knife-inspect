@@ -13,8 +13,10 @@ Run `health_inspector help` for more options
 
 So far it checks if...
 
-* your chef server has cookbooks you don't have locally
-* your chef server is missing cookbooks you have locally
-* cookbook versions are not the same between server and local chef repo
-* you have uncommitted changes in a cookbook (assuming your cookbook is a git repo)
-* you have commits in a cookbook that haven't been pushed to your remote (assuming your cookbook is a git repo)
+* your cookbooks are in sync
+* you have uncommitted changes in a cookbook (assuming your cookbooks are in their own git repos)
+* you have commits in a cookbook that haven't been pushed to your remote (assuming your cookbooks are in their own git repos)
+* your data bags are in sync
+* your data bag items are in sync
+* your environments are in sync
+* your roles are in sync

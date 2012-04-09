@@ -7,6 +7,7 @@ require "health_inspector/inspector"
 require "health_inspector/checklists/base"
 require "health_inspector/checklists/cookbooks"
 require "health_inspector/checklists/data_bags"
+require "health_inspector/checklists/data_bag_items"
 require "health_inspector/cli"
 require "json"
 

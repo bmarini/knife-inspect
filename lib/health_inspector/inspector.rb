@@ -12,6 +12,7 @@ module HealthInspector
     def inspect
       Checklists::Cookbooks.run(@context)
       Checklists::DataBags.run(@context)
+      Checklists::DataBagItems.run(@context)
     end
   end
 end

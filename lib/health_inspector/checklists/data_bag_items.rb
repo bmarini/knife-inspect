@@ -62,7 +62,7 @@ module HealthInspector
 
       def load_item_from_local(name)
         JSON.parse( File.read("#{@context.repo_path}/data_bags/#{name}.json") )
-      rescue
+      rescue IOError
         nil
       end
     end

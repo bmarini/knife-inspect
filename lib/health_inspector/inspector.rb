@@ -13,6 +13,7 @@ module HealthInspector
       Checklists::Cookbooks.run(@context)
       Checklists::DataBags.run(@context)
       Checklists::DataBagItems.run(@context)
+      Checklists::Environments.run(@context)
     end
   end
 end

@@ -14,6 +14,7 @@ module HealthInspector
       Checklists::DataBags.run(@context)
       Checklists::DataBagItems.run(@context)
       Checklists::Environments.run(@context)
+      Checklists::Roles.run(@context)
     end
   end
 end

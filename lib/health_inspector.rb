@@ -9,6 +9,7 @@ require "health_inspector/checklists/cookbooks"
 require "health_inspector/checklists/data_bags"
 require "health_inspector/checklists/data_bag_items"
 require "health_inspector/checklists/environments"
+require "health_inspector/checklists/roles"
 require "health_inspector/cli"
 require "json"
 

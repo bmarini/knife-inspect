@@ -1,3 +1,7 @@
+## 0.0.5 ( 2012-04-13 )
+
+* Fix #2, exception when a data bag item json file doesn't exist locally
+
 ## 0.0.4 ( 2012-04-09 )
 
 * Add checks for data bags, data bag items, environments, and roles

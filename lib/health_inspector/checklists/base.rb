@@ -30,7 +30,7 @@ module HealthInspector
         banner "Inspecting #{self.class.title}"
 
         items.each do |item|
-          failures = checks.map { |check| run_check(check, item) }.compact
+          failures = run_checks(item)
 
           if failures.empty?
             print_success(item.name)
@@ -38,6 +38,10 @@ module HealthInspector
             print_failures(item.name, failures)
           end
         end
+      end
+
+      def run_checks(item)
+        checks.map { |check| run_check(check, item) }.compact
       end
 
       def checks

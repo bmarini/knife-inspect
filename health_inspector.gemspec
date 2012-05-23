@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest"
   s.add_development_dependency "mocha"
   s.add_runtime_dependency "thor"
-  s.add_runtime_dependency "chef"
+  s.add_runtime_dependency "chef", "~> 0.10.8"
 end

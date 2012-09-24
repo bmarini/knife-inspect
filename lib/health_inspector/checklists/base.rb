@@ -49,7 +49,7 @@ module HealthInspector
       end
 
       class CheckContext
-        include Check
+        include Check, Color
         attr_accessor :item, :context
 
         def initialize(check, item, context)

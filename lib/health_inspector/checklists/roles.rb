@@ -5,6 +5,8 @@ module HealthInspector
     class Roles < Base
       title "roles"
 
+      require 'yajl'
+
       add_check "local copy exists" do
         failure "exists on server but not locally" unless item.local
       end
@@ -41,7 +43,7 @@ module HealthInspector
 
       def items_in_repo
         Dir.chdir("#{@context.repo_path}/roles") do
-          Dir["*.rb"].map { |e| e.gsub('.rb', '') }
+          Dir["*.rb"].map { |e| e.gsub(/\.(rb|json|js)/, '') }
         end
       end
 
@@ -53,9 +55,21 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        role = Chef::Role.new
-        role.from_file( "#{@context.repo_path}/roles/#{name}.rb" )
-        role.to_hash
+        if File.file?("#{@context.repo_path}/roles/#{name}.rb")
+          role = Chef::Role.new
+          role.from_file( "#{@context.repo_path}/roles/#{name}.rb" )
+        elsif File.file?( "#{@context.repo_path}/roles/#{name}.js" )
+          json =  Yajl::Parser.parse( IO.read (" #{@context.repo_path}/roles/#{name}.js" ))
+          role = Chef::Role.json_create(json)
+        elsif File.file?( "#{@context.repo_path}/roles/#{name}.json" )
+          json =  Yajl::Parser.parse( IO.read ( "#{@context.repo_path}/roles/#{name}.json" ))
+          role = Chef::Role.json_create(json)
+        end
+        if role
+          role.to_hash
+        else
+          nil
+        end
       rescue IOError
         nil
       end

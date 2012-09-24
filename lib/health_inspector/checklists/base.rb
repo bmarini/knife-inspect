@@ -49,7 +49,7 @@ module HealthInspector
       end
 
       class CheckContext
-        include Check
+        include Check, Color
         attr_accessor :item, :context
 
         def initialize(check, item, context)
@@ -61,6 +61,18 @@ module HealthInspector
         def call
           instance_eval(&@check)
         end
+      def diff(original, other)
+        (original.keys + other.keys).uniq.inject({}) do |memo, key|
+          unless original[key]==other[key]
+            if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
+              memo[key] = diff(original[key], other[key])
+            else
+              memo[key] = [original[key], other[key]]
+            end
+          end
+          memo
+        end
+      end
       end
 
       def run_check(check, item)
@@ -68,6 +80,7 @@ module HealthInspector
         check_context.call
         return check_context.failure
       end
+
 
       def banner(message)
         puts

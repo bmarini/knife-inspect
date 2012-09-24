@@ -5,6 +5,8 @@ module HealthInspector
     class Environments < Base
       title "environments"
 
+      require 'json'
+
       add_check "local copy exists" do
         failure "exists on server but not locally" unless item.local
       end
@@ -41,7 +43,7 @@ module HealthInspector
 
       def items_in_repo
         Dir.chdir("#{@context.repo_path}/environments") do
-          Dir["*.rb"].map { |e| e.gsub('.rb', '') }
+          Dir["*.{rb,json,js}"].map { |e| e.gsub(/\.(rb|json|js)/,"") }
         end
       end
 
@@ -53,10 +55,20 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        env = Chef::Environment.new
-        env.from_file( "#{@context.repo_path}/environments/#{name}.rb" )
-        env.to_hash
-      rescue IOError
+        if File.file?( "#{@context.repo_path}/environments/#{name}.rb")
+          env = Chef::Environment.new
+          env.from_file( "#{@context.repo_path}/environments/#{name}.rb")
+        elsif File.file?( "#{@context.repo_path}/environments/#{name}.js")
+          env = Chef::Environment.json_create( Yajl::Parser.parse( IO.read( "#{@context.repo_path}/environments/#{name}.js" )))
+        elsif File.file?( "#{@context.repo_path}/environments/#{name}.json")
+          env = Chef::Environment.json_create( Yajl::Parser.parse( IO.read( "#{@context.repo_path}/environments/#{name}.json" )))
+        end
+        if env
+          env.to_hash
+        else
+          nil
+        end
+        rescue IOError
         nil
       end
     end

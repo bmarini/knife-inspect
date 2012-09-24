@@ -5,7 +5,7 @@ module HealthInspector
     end
 
     def initialize(repo_path, config_path)
-      @context = Context.new( repo_path, File.join(repo_path, config_path) )
+      @context = Context.new( repo_path, config_path )
       @context.configure
     end
 

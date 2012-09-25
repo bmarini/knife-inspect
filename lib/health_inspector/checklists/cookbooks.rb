@@ -39,7 +39,10 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        failure "Your server has a newer version of the file" if false
+        if item.local_version && item.server_version &&
+           item.local_version == item.server_version
+          failure "Your server has a newer version of the file" if checksum_compare(item.name,item.server_version)
+        end
       end
 
       class Cookbook < Struct.new(:name, :path, :server_version, :local_version)
@@ -54,8 +57,6 @@ module HealthInspector
         server_cookbooks           = cookbooks_on_server
         local_cookbooks            = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
-        server_cbs_checksums       = cookbook_checksums_on_server( all_cookbook_names )
-        local_cbs_checksums        = cookbook_checksums_in_repo( all_cookbook_names )
 
         all_cookbook_names.map do |name|
           Cookbook.new.tap do |cookbook|
@@ -95,12 +96,10 @@ module HealthInspector
         path ? File.join(path, name) : nil
       end
 
-      def cookbook_checksums_on_server(name)
-
-      end
-
-      def cookbook_checksums_in_repo(name)
-
+      def checksum_compare(name,version)
+        rest = Chef::Rest.new(@context.configure[:chef_server_url], @context.configure[:node_name],
+                              @context.configure[:client_key])
+        manifest = Yajl::Parser.parse(rest.get_rest("/cookbooks/#{name}/#{version}"))
       end
     end
   end

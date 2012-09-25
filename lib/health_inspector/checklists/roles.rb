@@ -43,7 +43,7 @@ module HealthInspector
 
       def items_in_repo
         Dir.chdir("#{@context.repo_path}/roles") do
-          Dir["*.rb"].map { |e| e.gsub(/\.(rb|json|js)/, '') }
+          Dir["*.{rb,json,js}"].map { |e| e.gsub(/\.(rb|json|js)/, '') }
         end
       end
 
@@ -55,23 +55,7 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        if File.file?("#{@context.repo_path}/roles/#{name}.rb")
-          role = Chef::Role.new
-          role.from_file( "#{@context.repo_path}/roles/#{name}.rb" )
-        elsif File.file?( "#{@context.repo_path}/roles/#{name}.js" )
-          json =  Yajl::Parser.parse( IO.read (" #{@context.repo_path}/roles/#{name}.js" ))
-          role = Chef::Role.json_create(json)
-        elsif File.file?( "#{@context.repo_path}/roles/#{name}.json" )
-          json =  Yajl::Parser.parse( IO.read ( "#{@context.repo_path}/roles/#{name}.json" ))
-          role = Chef::Role.json_create(json)
-        end
-        if role
-          role.to_hash
-        else
-          nil
-        end
-      rescue IOError
-        nil
+        load_ruby_or_json_from_local(Chef::Role, "roles", name)
       end
     end
 

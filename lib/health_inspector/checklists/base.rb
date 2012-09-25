@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require "pathname"
 
 module HealthInspector
   module Checklists
@@ -61,18 +62,19 @@ module HealthInspector
         def call
           instance_eval(&@check)
         end
-      def diff(original, other)
-        (original.keys + other.keys).uniq.inject({}) do |memo, key|
-          unless original[key]==other[key]
-            if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
-              memo[key] = diff(original[key], other[key])
-            else
-              memo[key] = [original[key], other[key]]
+
+        def diff(original, other)
+          (original.keys + other.keys).uniq.inject({}) do |memo, key|
+            unless original[key] == other[key]
+              if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
+                memo[key] = diff(original[key], other[key])
+              else
+                memo[key] = [original[key], other[key]]
+              end
             end
+            memo
           end
-          memo
         end
-      end
       end
 
       def run_check(check, item)
@@ -80,7 +82,6 @@ module HealthInspector
         check_context.call
         return check_context.failure
       end
-
 
       def banner(message)
         puts
@@ -98,6 +99,26 @@ module HealthInspector
         failures.each do |message|
           puts color('bright yellow', "  #{message}")
         end
+      end
+
+      def load_ruby_or_json_from_local(chef_class, folder, name)
+        path_template = "#{@context.repo_path}/#{folder}/#{name}.%s"
+        ruby_pathname = Pathname.new(path_template % "rb")
+        json_pathname = Pathname.new(path_template % "json")
+        js_pathname   = Pathname.new(path_template % "js")
+
+        if ruby_pathname.exist?
+          instance = chef_class.new
+          instance.from_file(ruby_pathname.to_s)
+        elsif json_pathname.exist?
+          instance = chef_class.json_create( JSON.parse( json_pathname.read ) )
+        elsif js_pathname.exist?
+          instance = chef_class.json_create( JSON.parse( js_pathname.read ) )
+        end
+
+        instance ? instance.to_hash : nil
+      rescue IOError
+        nil
       end
 
     end

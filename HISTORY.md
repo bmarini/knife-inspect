@@ -1,4 +1,11 @@
-## 0.0.6 ( 2012-05-23)
+## 0.1.0 ( 2012-09-24 )
+
+* Bump Chef dependency version up to 10.14
+* Add support for JSON environments
+* Add support for JSON roles
+* Display the diff between JSONs when JSON data doesn't match.
+
+## 0.0.6 ( 2012-05-23 )
 
 * Depend on Chef 0.10.8, since it depends on a later version of the json gem.
   An earlier version of the json gem was throwing incorrect parse errors.

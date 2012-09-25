@@ -5,7 +5,6 @@ module HealthInspector
     class Environments < Base
       title "environments"
 
-
       add_check "local copy exists" do
         failure "exists on server but not locally" unless item.local
       end
@@ -55,21 +54,7 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        if File.file?( "#{@context.repo_path}/environments/#{name}.rb")
-          env = Chef::Environment.new
-          env.from_file( "#{@context.repo_path}/environments/#{name}.rb")
-        elsif File.file?( "#{@context.repo_path}/environments/#{name}.js")
-          env = Chef::Environment.json_create( Yajl::Parser.parse( IO.read( "#{@context.repo_path}/environments/#{name}.js" )))
-        elsif File.file?( "#{@context.repo_path}/environments/#{name}.json")
-          env = Chef::Environment.json_create( Yajl::Parser.parse( IO.read( "#{@context.repo_path}/environments/#{name}.json" )))
-        end
-        if env
-          env.to_hash
-        else
-          nil
-        end
-        rescue IOError
-        nil
+        load_ruby_or_json_from_local(Chef::Environment, "environments", name)
       end
     end
 

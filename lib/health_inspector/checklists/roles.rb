@@ -17,7 +17,8 @@ module HealthInspector
 
       add_check "items are the same" do
         if item.server && item.local
-          failure "#{item.server}\n  is not equal to\n  #{item.local}" unless item.server == item.local
+          roles_diff = diff( item.server, item.local)
+          failure roles_diff unless roles_diff.empty? 
         end
       end
 

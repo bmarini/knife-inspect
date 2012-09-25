@@ -69,7 +69,7 @@ module HealthInspector
               if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
                 memo[key] = diff(original[key], other[key])
               else
-                memo[key] = [original[key], other[key]]
+                memo[key] = {"server" => original[key],"local" => other[key]}
               end
             end
             memo
@@ -97,8 +97,38 @@ module HealthInspector
         puts color('bright fail', "- #{subject}")
 
         failures.each do |message|
-          puts color('bright yellow', "  #{message}")
+          if message.kind_of? Hash
+            puts color('bright yellow',"  has the following values mismatched on the server and repo\n")
+            print_failures_from_hash(message)
+          else
+            puts color('bright yellow', "  #{message}")
+          end
         end
+      end
+
+      def print_failures_from_hash(message, depth=0)
+        message.keys.each do |key|
+          print_key(key,depth)
+          if message[key].include? "server"
+            print_value_diff(message[key],depth)
+            message[key].delete_if {|k,v| k=="server"||"local"}
+            print_failures_from_hash(message[key],depth+1) if !message[key].empty?
+          else
+            print_failures_from_hash(message[key], depth+1)
+          end
+        end
+      end
+      def print_key(key,depth)
+        puts (color('bright yellow',"#{key} => ")).prepend(" "*(4*depth+2))
+      end
+
+      def print_value_diff(value,depth)
+        print (color('bright fail',"Server Value: ")).prepend(" "*(4*depth+4))
+        print value["server"]
+        print "\n"
+        print (color('bright fail',"Local Value:  ")).prepend(" "*(4*depth+4))
+        print value["local"] 
+        print "\n\n"
       end
 
       def load_ruby_or_json_from_local(chef_class, folder, name)
@@ -111,9 +141,9 @@ module HealthInspector
           instance = chef_class.new
           instance.from_file(ruby_pathname.to_s)
         elsif json_pathname.exist?
-          instance = chef_class.json_create( JSON.parse( json_pathname.read ) )
+          instance = chef_class.json_create( Yajl::Parser.parse( json_pathname.read ) )
         elsif js_pathname.exist?
-          instance = chef_class.json_create( JSON.parse( js_pathname.read ) )
+          instance = chef_class.json_create( Yajl::Parser.parse( js_pathname.read ) )
         end
 
         instance ? instance.to_hash : nil

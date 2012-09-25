@@ -16,7 +16,7 @@ module HealthInspector
       add_check "items are the same" do
         if item.server && item.local
           environment_diff = diff(item.server,item.local)
-          failure "#{environment_diff}\n" unless environment_diff.empty?
+          failure environment_diff unless environment_diff.empty?
         end
       end
 

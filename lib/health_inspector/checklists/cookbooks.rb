@@ -13,7 +13,7 @@ module HealthInspector
 
       add_check "versions" do
         if item.local_version && item.server_version &&
-           item.local_version != item.server_version
+          item.local_version != item.server_version
           failure "chef server has #{item.server_version} but local version is #{item.local_version}"
         end
       end
@@ -40,8 +40,9 @@ module HealthInspector
 
       add_check "changes on the server not in the repo" do
         if item.local_version && item.server_version &&
-           item.local_version == item.server_version
-          failure "Your server has a newer version of the file" if checksum_compare(item.name,item.server_version)
+          item.local_version == item.server_version
+          bad_checksums = checksum_compare(item.name, item.server_version)
+          failure "Your server has a newer version of the files #{bad_checksum}" if !bad_checksums.empty? 
         end
       end
 
@@ -83,12 +84,12 @@ module HealthInspector
           select { |path| File.exists?("#{path}/metadata.rb") }.
           inject({}) do |hsh, path|
 
-          name    = File.basename(path)
-          version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+            name    = File.basename(path)
+            version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
 
-          hsh[name] = version
-          hsh
-        end
+            hsh[name] = version
+            hsh
+          end
       end
 
       def cookbook_path(name)
@@ -97,10 +98,23 @@ module HealthInspector
       end
 
       def checksum_compare(name,version)
+        bad_files = []
         rest = Chef::Rest.new(@context.configure[:chef_server_url], @context.configure[:node_name],
                               @context.configure[:client_key])
-        manifest = Yajl::Parser.parse(rest.get_rest("/cookbooks/#{name}/#{version}"))
+        manifest = Yajl::Parser.parse(rest.get_rest("//cookbooks//#{name}//#{version}"))
+        manifest.each do |key, value|
+          if value.kind_of? Array
+            value.each do |file|
+              checksum = Chef::CookbookVersion.checksum_cookbook_file(IO.read("#{@context.cookbook_path}/#{name}/#{file["path"]}"))
+              if checksum != file['checksum']
+                bad_files += file['path']
+              end
+            end
+          end
+        end
+        badfiles
       end
+
     end
   end
 end

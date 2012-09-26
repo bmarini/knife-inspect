@@ -15,7 +15,8 @@ module HealthInspector
 
       add_check "items are the same" do
         if item.server && item.local
-          failure "#{item.server}\n  is not equal to\n  #{item.local}" unless item.server == item.local
+          item_diff = diff(item.server, item.local)
+          failure item_diff unless item_diff.empty?
         end
       end
 
@@ -61,7 +62,7 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        JSON.parse( File.read("#{@context.repo_path}/data_bags/#{name}.json") )
+        Yajl::Parser.parse( File.read("#{@context.repo_path}/data_bags/#{name}.json") )
       rescue IOError, Errno::ENOENT
         nil
       end

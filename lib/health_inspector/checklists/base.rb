@@ -106,27 +106,29 @@ module HealthInspector
         end
       end
 
-      def print_failures_from_hash(message, depth=0)
+      def print_failures_from_hash(message, depth=2)
         message.keys.each do |key|
           print_key(key,depth)
+
           if message[key].include? "server"
             print_value_diff(message[key],depth)
-            message[key].delete_if {|k,v| k=="server"||"local"}
-            print_failures_from_hash(message[key],depth+1) if !message[key].empty?
+            message[key].delete_if { |k,v| k == "server" || "local" }
+            print_failures_from_hash(message[key], depth + 1) unless message[key].empty?
           else
-            print_failures_from_hash(message[key], depth+1)
+            print_failures_from_hash(message[key], depth + 1)
           end
         end
       end
-      def print_key(key,depth)
-        puts (color('bright yellow',"#{key} => ")).prepend(" "*(4*depth+2))
+
+      def print_key(key, depth)
+        puts indent( color('bright yellow',"#{key} : "), depth )
       end
 
-      def print_value_diff(value,depth)
-        print (color('bright fail',"Server Value: ")).prepend(" "*(4*depth+4))
+      def print_value_diff(value, depth)
+        print indent( color('bright fail',"server value = "), depth + 1 )
         print value["server"]
         print "\n"
-        print (color('bright fail',"Local Value:  ")).prepend(" "*(4*depth+4))
+        print indent( color('bright fail',"local value  = "), depth + 1 )
         print value["local"] 
         print "\n\n"
       end
@@ -149,6 +151,10 @@ module HealthInspector
         instance ? instance.to_hash : nil
       rescue IOError
         nil
+      end
+
+      def indent(string, depth)
+        string.prepend(' ' * 2 * depth)
       end
 
     end

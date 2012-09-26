@@ -1,3 +1,9 @@
+## 0.2.0 ( 2012-09-25 )
+
+* Add a better diff output.
+* Add diff output to data bag items.
+* Switch to yajl-ruby to fix JSON parsing issues (Chef uses this also).
+
 ## 0.1.0 ( 2012-09-24 )
 
 * Bump Chef dependency version up to 10.14

@@ -39,11 +39,8 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        if item.local_version && item.server_version &&
-          item.local_version == item.server_version
           bad_checksums = checksum_compare(item.name, item.server_version)
           failure "Your server has a newer version of the files #{bad_checksum}" if !bad_checksums.empty? 
-        end
       end
 
       class Cookbook < Struct.new(:name, :path, :server_version, :local_version)
@@ -53,6 +50,9 @@ module HealthInspector
       end
 
       title "cookbooks"
+      require 'chef/cookbook_version'
+      require 'chef/rest'
+      require 'pathname'
 
       def items
         server_cookbooks           = cookbooks_on_server
@@ -105,10 +105,9 @@ module HealthInspector
         manifest.each do |key, value|
           if value.kind_of? Array
             value.each do |file|
-              checksum = Chef::CookbookVersion.checksum_cookbook_file(IO.read("#{@context.cookbook_path}/#{name}/#{file["path"]}"))
-              if checksum != file['checksum']
-                bad_files += file['path']
-              end
+              cb_path = Pathname.new("#{@context.cookbook_path}/#{name}/#{file["path"]}")
+              checksum = Chef::CookbookVersion.checksum_cookbook_file(cb_path.read) if cb_path.exist?
+              bad_files += "#{key}: #{file['path']}" if checksum != file['checksum']
             end
           end
         end

@@ -13,7 +13,7 @@ module HealthInspector
 
       add_check "versions" do
         if item.local_version && item.server_version &&
-           item.local_version != item.server_version
+          item.local_version != item.server_version
           failure "chef server has #{item.server_version} but local version is #{item.local_version}"
         end
       end
@@ -39,7 +39,8 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        failure "Your server has a newer version of the file" if false
+          bad_checksums = checksum_compare(item.name, item.server_version)
+          failure "Your server has a newer version of the files #{bad_checksum}" if !bad_checksums.empty? 
       end
 
       class Cookbook < Struct.new(:name, :path, :server_version, :local_version)
@@ -49,13 +50,14 @@ module HealthInspector
       end
 
       title "cookbooks"
+      require 'chef/cookbook_version'
+      require 'chef/rest'
+      require 'pathname'
 
       def items
         server_cookbooks           = cookbooks_on_server
         local_cookbooks            = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
-        server_cbs_checksums       = cookbook_checksums_on_server( all_cookbook_names )
-        local_cbs_checksums        = cookbook_checksums_in_repo( all_cookbook_names )
 
         all_cookbook_names.map do |name|
           Cookbook.new.tap do |cookbook|
@@ -82,12 +84,12 @@ module HealthInspector
           select { |path| File.exists?("#{path}/metadata.rb") }.
           inject({}) do |hsh, path|
 
-          name    = File.basename(path)
-          version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+            name    = File.basename(path)
+            version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
 
-          hsh[name] = version
-          hsh
-        end
+            hsh[name] = version
+            hsh
+          end
       end
 
       def cookbook_path(name)
@@ -95,13 +97,23 @@ module HealthInspector
         path ? File.join(path, name) : nil
       end
 
-      def cookbook_checksums_on_server(name)
-
+      def checksum_compare(name,version)
+        bad_files = []
+        rest = Chef::Rest.new(@context.configure[:chef_server_url], @context.configure[:node_name],
+                              @context.configure[:client_key])
+        manifest = Yajl::Parser.parse(rest.get_rest("//cookbooks//#{name}//#{version}"))
+        manifest.each do |key, value|
+          if value.kind_of? Array
+            value.each do |file|
+              cb_path = Pathname.new("#{@context.cookbook_path}/#{name}/#{file["path"]}")
+              checksum = Chef::CookbookVersion.checksum_cookbook_file(cb_path.read) if cb_path.exist?
+              bad_files += "#{key}: #{file['path']}" if checksum != file['checksum']
+            end
+          end
+        end
+        badfiles
       end
 
-      def cookbook_checksums_in_repo(name)
-
-      end
     end
   end
 end

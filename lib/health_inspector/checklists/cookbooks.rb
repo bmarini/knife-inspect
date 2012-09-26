@@ -54,10 +54,6 @@ module HealthInspector
       end
 
       title "cookbooks"
-      require 'chef/checksum_cache'
-      require 'chef/cookbook_version'
-      require 'chef/rest'
-      require 'pathname'
 
       def items
         server_cookbooks           = cookbooks_on_server

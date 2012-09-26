@@ -11,6 +11,8 @@ require "health_inspector/checklists/data_bag_items"
 require "health_inspector/checklists/environments"
 require "health_inspector/checklists/roles"
 require "health_inspector/cli"
+require 'chef/rest'
+require 'chef/checksum_cache'
 require "json"
 
 module HealthInspector

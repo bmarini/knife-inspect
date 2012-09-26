@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "minitest"
   s.add_development_dependency "mocha"
+
   s.add_runtime_dependency "thor"
   s.add_runtime_dependency "chef", "~> 10.14"
+  s.add_runtime_dependency "yajl-ruby"
 end

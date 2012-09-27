@@ -10,9 +10,9 @@ module HealthInspector
       :default => ".chef/knife.rb",
       :banner => "Path to your knife config file."
 
-    desc "inspect", "Inspect a chef server repo"
-    def inspect
-      Inspector.inspect(options[:repopath], options[:configpath])
+    desc "inspect [COMPONENT]", "Inspect a chef repo. Optionally, specify an individual chef component to inspect. One of cookbooks, databags, databagitems, environments, roles"
+    def inspect(component='')
+      Inspector.inspect(component,options[:repopath], options[:configpath])
     end
   end
 end

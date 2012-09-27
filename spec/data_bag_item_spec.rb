@@ -6,9 +6,11 @@ describe "HealthInspector::Checklists::DataBagItems" do
   end
 
   it "should detect if a data bag item does not exist locally" do
-    subject.expects(:data_bag_items_on_server).returns( ["apps/app1"] )
-    subject.expects(:load_item_from_server).with("apps/app1").returns({})
-    failures = subject.run_checks(subject.items.first)
+    item = HealthInspector::Checklists::DataBagItems::DataBagItem.new(
+      :name => "apps", :server => ["apps/app1"], :local => nil
+    )
+
+    failures = subject.run_checks(item)
     failures.first.include?("exists on server but not locally").must_equal true
   end
 end

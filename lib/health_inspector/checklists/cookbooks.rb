@@ -73,9 +73,8 @@ module HealthInspector
       end
 
       def cookbooks_on_server
-        Yajl::Parser.parse( @context.knife_command("cookbook list -Fj") ).inject({}) do |hsh, c|
-          name, version = c.split
-          hsh[name] = version
+        chef_rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
+          hsh[name] = version["versions"].first["version"]
           hsh
         end
       end

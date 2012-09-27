@@ -18,5 +18,9 @@ module HealthInspector
       Chef::Config.from_file(config_path)
       Chef::Config
     end
+
+    def chef_rest
+      @chef_rest ||= Chef::REST.new( config[:chef_server_url], config[:node_name], config[:client_key] )
+    end
   end
 end

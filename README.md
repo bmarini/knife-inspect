@@ -23,7 +23,3 @@ So far it checks if...
 * your data bag items are in sync
 * your environments are in sync
 * your roles are in sync
-
-## Assumptions
-
-* Your roles and environments are written using the ruby DSL.

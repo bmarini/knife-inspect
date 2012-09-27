@@ -30,7 +30,7 @@ module HealthInspector
       def run
         banner "Inspecting #{self.class.title}"
 
-        items.each do |item|
+        each_item do |item|
           failures = run_checks(item)
 
           if failures.empty?

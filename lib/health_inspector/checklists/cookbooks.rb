@@ -55,19 +55,21 @@ module HealthInspector
 
       title "cookbooks"
 
-      def items
-        server_cookbooks           = cookbooks_on_server
-        local_cookbooks            = cookbooks_in_repo
+      def each_item
+        server_cookbooks   = cookbooks_on_server
+        local_cookbooks    = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
 
-        all_cookbook_names.map do |name|
-          Cookbook.new.tap do |cookbook|
+        all_cookbook_names.each do |name|
+          item = Cookbook.new.tap do |cookbook|
             cookbook.name           = name
             cookbook.path           = cookbook_path(name)
             cookbook.server_version = server_cookbooks[name]
             cookbook.local_version  = local_cookbooks[name]
             cookbook.bad_files      = checksum_compare(name, cookbook.server_version)
           end
+
+          yield item
         end
       end
 
@@ -110,6 +112,7 @@ module HealthInspector
           if value.kind_of? Array
             value.each do |file|
               path = cookbook_path("#{name}/#{file["path"]}")
+
               if path
                 checksum = Chef::ChecksumCache.generate_md5_checksum_for_file(path)
                 memo << "#{file['path']}" if checksum != file['checksum']

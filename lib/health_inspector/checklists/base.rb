@@ -77,6 +77,11 @@ module HealthInspector
         end
       end
 
+      def chef_rest 
+        @rest ||= Chef::REST.new(@context.configure[:chef_server_url], @context.configure[:node_name],
+                                 @context.configure[:client_key])
+      end
+
       def run_check(check, item)
         check_context = CheckContext.new(check, item, @context)
         check_context.call

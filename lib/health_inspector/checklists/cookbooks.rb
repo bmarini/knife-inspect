@@ -39,10 +39,9 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        if item.server_version == item.local_version &&
-           !item.bad_files.empty? 
+        if item.server_version == item.local_version && !item.bad_files.empty?
           fail_message = "has a checksum mismatch between server and repo in\n"
-          fail_message << item.bad_files.map{|f| "    " + f + "\n"}.join.chop
+          fail_message << item.bad_files.map { |f| "    #{f}" }.join("\n")
           failure fail_message 
         end
       end

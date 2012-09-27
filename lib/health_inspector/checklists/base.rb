@@ -154,7 +154,7 @@ module HealthInspector
       end
 
       def indent(string, depth)
-        string.prepend(' ' * 2 * depth)
+        (' ' * 2 * depth) + string
       end
 
     end

@@ -30,7 +30,7 @@ module HealthInspector
       def run
         banner "Inspecting #{self.class.title}"
 
-        items.each do |item|
+        each_item do |item|
           failures = run_checks(item)
 
           if failures.empty?
@@ -75,6 +75,10 @@ module HealthInspector
             memo
           end
         end
+      end
+
+      def chef_rest
+        @context.chef_rest
       end
 
       def run_check(check, item)
@@ -154,7 +158,7 @@ module HealthInspector
       end
 
       def indent(string, depth)
-        (' ' * 2 * depth) << string
+        (' ' * 2 * depth) + string
       end
 
     end

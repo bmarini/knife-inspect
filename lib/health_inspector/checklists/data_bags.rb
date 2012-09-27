@@ -15,17 +15,19 @@ module HealthInspector
 
       DataBag = Struct.new(:name, :exists_on_server, :exists_locally)
 
-      def items
+      def each_item
         server_data_bags   = data_bags_on_server
         local_data_bags    = data_bags_in_repo
         all_data_bag_names = ( server_data_bags + local_data_bags ).uniq.sort
 
-        all_data_bag_names.map do |name|
-          DataBag.new.tap do |data_bag|
+        all_data_bag_names.each do |name|
+          item = DataBag.new.tap do |data_bag|
             data_bag.name = name
             data_bag.exists_on_server = data_bags_on_server.include?(name)
             data_bag.exists_locally = data_bags_in_repo.include?(name)
           end
+
+          yield item
         end
       end
 

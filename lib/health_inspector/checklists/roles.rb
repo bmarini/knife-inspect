@@ -24,17 +24,19 @@ module HealthInspector
 
       Role = Struct.new(:name, :server, :local)
 
-      def items
+      def each_item
         server_items   = items_on_server
         local_items    = items_in_repo
         all_item_names = ( server_items + local_items ).uniq.sort
 
-        all_item_names.map do |name|
-          Role.new.tap do |item|
+        all_item_names.each do |name|
+          item = Role.new.tap do |item|
             item.name   = name
             item.server = load_item_from_server(name)
             item.local  = load_item_from_local(name)
           end
+
+          yield item
         end
       end
 

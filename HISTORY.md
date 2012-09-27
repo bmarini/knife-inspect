@@ -1,3 +1,11 @@
+## 0.3.0 ( 2012-09-26 )
+
+* Add new check for cookbooks: checksum comparison for each file
+
+## 0.2.1 ( 2012-09-26 )
+
+* Fix 1.8.7 incompatibility introduced in last release (String#prepend).
+
 ## 0.2.0 ( 2012-09-25 )
 
 * Add a better diff output.

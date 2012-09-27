@@ -13,7 +13,7 @@ module HealthInspector
 
       add_check "versions" do
         if item.local_version && item.server_version &&
-           item.local_version != item.server_version
+          item.local_version != item.server_version
           failure "chef server has #{item.server_version} but local version is #{item.local_version}"
         end
       end
@@ -39,10 +39,14 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        failure "Your server has a newer version of the file" if false
+        if item.server_version == item.local_version && !item.bad_files.empty?
+          fail_message = "has a checksum mismatch between server and repo in\n"
+          fail_message << item.bad_files.map { |f| "    #{f}" }.join("\n")
+          failure fail_message 
+        end
       end
 
-      class Cookbook < Struct.new(:name, :path, :server_version, :local_version)
+      class Cookbook < Struct.new(:name, :path, :server_version, :local_version, :bad_files)
         def git_repo?
           self.path && File.exist?("#{self.path}/.git")
         end
@@ -50,20 +54,21 @@ module HealthInspector
 
       title "cookbooks"
 
-      def items
-        server_cookbooks           = cookbooks_on_server
-        local_cookbooks            = cookbooks_in_repo
+      def each_item
+        server_cookbooks   = cookbooks_on_server
+        local_cookbooks    = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
-        server_cbs_checksums       = cookbook_checksums_on_server( all_cookbook_names )
-        local_cbs_checksums        = cookbook_checksums_in_repo( all_cookbook_names )
 
-        all_cookbook_names.map do |name|
-          Cookbook.new.tap do |cookbook|
+        all_cookbook_names.each do |name|
+          item = Cookbook.new.tap do |cookbook|
             cookbook.name           = name
             cookbook.path           = cookbook_path(name)
             cookbook.server_version = server_cookbooks[name]
             cookbook.local_version  = local_cookbooks[name]
+            cookbook.bad_files      = checksum_compare(name, cookbook.server_version)
           end
+
+          yield item
         end
       end
 
@@ -82,12 +87,12 @@ module HealthInspector
           select { |path| File.exists?("#{path}/metadata.rb") }.
           inject({}) do |hsh, path|
 
-          name    = File.basename(path)
-          version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+            name    = File.basename(path)
+            version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
 
-          hsh[name] = version
-          hsh
-        end
+            hsh[name] = version
+            hsh
+          end
       end
 
       def cookbook_path(name)
@@ -95,12 +100,34 @@ module HealthInspector
         path ? File.join(path, name) : nil
       end
 
-      def cookbook_checksums_on_server(name)
+      # TODO: Check files that exist locally but not in manifest on server
+      def checksum_compare(name, version)
+        begin
+          cookbook = chef_rest.get_rest("/cookbooks/#{name}/#{version}")
+        rescue Net::HTTPServerException => e
+          return ["Could not find cookbook #{name} on the server"]
+        end
 
+        bad_files = []
+
+        Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+          cookbook.manifest[segment].each do |manifest_record|
+            path = cookbook_path("#{name}/#{manifest_record["path"]}")
+
+            if path
+              checksum = checksum_cookbook_file(path)
+              bad_files << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
+            else
+              bad_files << "#{manifest_record['path']} does not exist in the repo"
+            end
+          end
+        end
+
+        bad_files
       end
 
-      def cookbook_checksums_in_repo(name)
-
+      def checksum_cookbook_file(filepath)
+        Chef::CookbookVersion.checksum_cookbook_file(filepath)
       end
     end
   end

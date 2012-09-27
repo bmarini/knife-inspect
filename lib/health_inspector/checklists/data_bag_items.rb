@@ -22,17 +22,19 @@ module HealthInspector
 
       DataBagItem = Struct.new(:name, :server, :local)
 
-      def items
+      def each_item
         server_data_bag_items   = data_bag_items_on_server
         local_data_bag_items    = data_bag_items_in_repo
         all_data_bag_item_names = ( server_data_bag_items + local_data_bag_items ).uniq.sort
 
-        all_data_bag_item_names.map do |name|
-          DataBagItem.new.tap do |data_bag_item|
+        all_data_bag_item_names.each do |name|
+          item = DataBagItem.new.tap do |data_bag_item|
             data_bag_item.name   = name
             data_bag_item.server = load_item_from_server(name)
             data_bag_item.local  = load_item_from_local(name)
           end
+
+          yield item
         end
       end
 

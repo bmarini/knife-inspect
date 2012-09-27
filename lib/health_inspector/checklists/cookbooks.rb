@@ -39,10 +39,9 @@ module HealthInspector
       end
 
       add_check "changes on the server not in the repo" do
-        if item.server_version == item.local_version &&
-           !item.bad_files.empty? 
+        if item.server_version == item.local_version && !item.bad_files.empty?
           fail_message = "has a checksum mismatch between server and repo in\n"
-          fail_message << item.bad_files.map{|f| "    " + f + "\n"}.join.chop
+          fail_message << item.bad_files.map { |f| "    #{f}" }.join("\n")
           failure fail_message 
         end
       end
@@ -55,19 +54,21 @@ module HealthInspector
 
       title "cookbooks"
 
-      def items
-        server_cookbooks           = cookbooks_on_server
-        local_cookbooks            = cookbooks_in_repo
+      def each_item
+        server_cookbooks   = cookbooks_on_server
+        local_cookbooks    = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
 
-        all_cookbook_names.map do |name|
-          Cookbook.new.tap do |cookbook|
+        all_cookbook_names.each do |name|
+          item = Cookbook.new.tap do |cookbook|
             cookbook.name           = name
             cookbook.path           = cookbook_path(name)
             cookbook.server_version = server_cookbooks[name]
             cookbook.local_version  = local_cookbooks[name]
             cookbook.bad_files      = checksum_compare(name, cookbook.server_version)
           end
+
+          yield item
         end
       end
 
@@ -98,29 +99,35 @@ module HealthInspector
         path ? File.join(path, name) : nil
       end
 
-      def checksum_compare(name,version)
+      # TODO: Check files that exist locally but not in manifest on server
+      def checksum_compare(name, version)
         begin
           cookbook = chef_rest.get_rest("/cookbooks/#{name}/#{version}")
         rescue Net::HTTPServerException => e
           return ["Could not find cookbook #{name} on the server"]
         end
 
-        cookbook.manifest.inject([]) do |memo, (key,value)|
-          if value.kind_of? Array
-            value.each do |file|
-              path = cookbook_path("#{name}/#{file["path"]}")
-              if path
-                checksum = Chef::ChecksumCache.generate_md5_checksum_for_file(path)
-                memo << "#{file['path']}" if checksum != file['checksum']
-              else
-                memo << "#{file['path']} does not exist in the repo"
-              end
+        bad_files = []
+
+        Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+          cookbook.manifest[segment].each do |manifest_record|
+            path = cookbook_path("#{name}/#{manifest_record["path"]}")
+
+            if path
+              checksum = checksum_cookbook_file(path)
+              bad_files << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
+            else
+              bad_files << "#{manifest_record['path']} does not exist in the repo"
             end
           end
-          memo
         end
+
+        bad_files
       end
 
+      def checksum_cookbook_file(filepath)
+        Chef::CookbookVersion.checksum_cookbook_file(filepath)
+      end
     end
   end
 end

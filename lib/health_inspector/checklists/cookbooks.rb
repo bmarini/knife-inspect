@@ -100,30 +100,35 @@ module HealthInspector
         path ? File.join(path, name) : nil
       end
 
-      def checksum_compare(name,version)
+      # TODO: Check files that exist locally but not in manifest on server
+      def checksum_compare(name, version)
         begin
           cookbook = chef_rest.get_rest("/cookbooks/#{name}/#{version}")
         rescue Net::HTTPServerException => e
           return ["Could not find cookbook #{name} on the server"]
         end
 
-        cookbook.manifest.inject([]) do |memo, (key,value)|
-          if value.kind_of? Array
-            value.each do |file|
-              path = cookbook_path("#{name}/#{file["path"]}")
+        bad_files = []
 
-              if path
-                checksum = Chef::ChecksumCache.generate_md5_checksum_for_file(path)
-                memo << "#{file['path']}" if checksum != file['checksum']
-              else
-                memo << "#{file['path']} does not exist in the repo"
-              end
+        Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+          cookbook.manifest[segment].each do |manifest_record|
+            path = cookbook_path("#{name}/#{manifest_record["path"]}")
+
+            if path
+              checksum = checksum_cookbook_file(path)
+              bad_files << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
+            else
+              bad_files << "#{manifest_record['path']} does not exist in the repo"
             end
           end
-          memo
         end
+
+        bad_files
       end
 
+      def checksum_cookbook_file(filepath)
+        Chef::CookbookVersion.checksum_cookbook_file(filepath)
+      end
     end
   end
 end

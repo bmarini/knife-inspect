@@ -17,7 +17,7 @@ Inspect a chef repo. Optionally, specify one component to inspect:
 [ cookbooks, databags, environments, roles ]
     EOS
 
-    def inspect(component=nil)
+    def inspect(component="")
       checklists = component_to_checklists(component)
       Inspector.inspect( checklists ,options[:repopath], options[:configpath])
     end
@@ -36,7 +36,7 @@ Inspect a chef repo. Optionally, specify one component to inspect:
         ["Environments"]
       when "roles"
         ["Roles"]
-      when nil, "all"
+      when "", "all"
         all
       else
         shell.say "I did not understand which component you wanted me to inspect. Running all checks."

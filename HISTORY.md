@@ -1,3 +1,7 @@
+## 0.4.1 ( 2012-09-28 )
+
+* Fix a bug I created in last release when passing no component.
+
 ## 0.4.0 ( 2012-09-28 )
 
 * Make `inspect` the default task

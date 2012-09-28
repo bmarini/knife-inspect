@@ -1,3 +1,10 @@
+## 0.4.0 ( 2012-09-28 )
+
+* Make `inspect` the default task
+* Add ability to specify individual components:
+
+      health_inspector inspect cookbooks
+
 ## 0.3.1 ( 2012-09-27 )
 
 * Stop shelling out for knife commands, use Chef API directly for everything.

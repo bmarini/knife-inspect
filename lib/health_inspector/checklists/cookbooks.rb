@@ -65,7 +65,7 @@ module HealthInspector
             cookbook.path           = cookbook_path(name)
             cookbook.server_version = server_cookbooks[name]
             cookbook.local_version  = local_cookbooks[name]
-            cookbook.bad_files      = checksum_compare(name, cookbook.server_version)
+            cookbook.bad_files      = checksum_compare(name, cookbook.server_version.inspect)
           end
 
           yield item
@@ -74,7 +74,7 @@ module HealthInspector
 
       def cookbooks_on_server
         chef_rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
-          hsh[name] = version["versions"].first["version"]
+          hsh[name] = Chef::Version.new(version["versions"].first["version"])
           hsh
         end
       end
@@ -89,7 +89,7 @@ module HealthInspector
             name    = File.basename(path)
             version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
 
-            hsh[name] = version
+            hsh[name] = Chef::Version.new(version)
             hsh
           end
       end

@@ -2,6 +2,9 @@ require "chef/config"
 
 module HealthInspector
   class Context < Struct.new(:repo_path, :config_path)
+
+    attr_accessor :no_color, :quiet_success
+
     def cookbook_path
       Array( config.cookbook_path )
     end

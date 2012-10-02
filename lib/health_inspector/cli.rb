@@ -4,11 +4,19 @@ module HealthInspector
   class CLI < Thor
     class_option 'repopath', :type => :string, :aliases => "-r",
       :default => ".",
-      :banner => "Path to your local chef-repo"
+      :banner => "Path to your local chef-repo."
 
     class_option 'configpath', :type => :string, :aliases => "-c",
       :default => ".chef/knife.rb",
       :banner => "Path to your knife config file."
+
+    class_option 'no-color', :type => :boolean,
+      :default => false,
+      :banner => "Suppress output of ansi color messages."
+
+    class_option 'quiet-success', :type => :boolean, :aliases => "-q",
+      :default => false,
+      :banner => "Suppress output of successful checks."
 
     default_task :inspect
 
@@ -19,7 +27,7 @@ Inspect a chef repo. Optionally, specify one component to inspect:
 
     def inspect(component="")
       checklists = component_to_checklists(component)
-      Inspector.inspect( checklists ,options[:repopath], options[:configpath])
+      Inspector.inspect( checklists, options)
     end
 
     protected

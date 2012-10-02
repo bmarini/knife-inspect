@@ -23,7 +23,11 @@ module HealthInspector
         'diff removed'  => 41
       }
 
+      if @context.no_color
+        str
+      else
       "\e[%sm%s\e[0m" % [ colors[type], str ]
+      end
     end
   end
 end

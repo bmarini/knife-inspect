@@ -34,7 +34,7 @@ module HealthInspector
           failures = run_checks(item)
 
           if failures.empty?
-            print_success(item.name)
+            print_success(item.name) unless @context.quiet_success
           else
             print_failures(item.name, failures)
           end

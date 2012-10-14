@@ -1,3 +1,11 @@
+## 0.5.0 ( 2012-10-14 )
+
+* Switch to RSpec
+* Add some test coverage (still needs much more)
+* Add option to suppress terminal output on successful checks
+* Add option to not use ansi color output
+* Make cookbook version comparison use Chef's native version class
+
 ## 0.4.1 ( 2012-09-28 )
 
 * Fix a bug I created in last release when passing no component.

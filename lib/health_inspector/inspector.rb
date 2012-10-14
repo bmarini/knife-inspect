@@ -1,11 +1,13 @@
 module HealthInspector
   class Inspector
-    def self.inspect(checklists, repo_path, config_path)
-      new(repo_path, config_path).inspect( checklists )
+    def self.inspect(checklists, options)
+      new(options).inspect( checklists )
     end
 
-    def initialize(repo_path, config_path)
-      @context = Context.new( repo_path, config_path )
+    def initialize(options)
+      @context = Context.new( options[:repopath], options[:configpath] )
+      @context.quiet_success = options[:'quiet-success']
+      @context.no_color      = options[:'no-color']
       @context.configure
     end
 

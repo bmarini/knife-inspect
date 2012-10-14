@@ -13,6 +13,7 @@ require "health_inspector/checklists/roles"
 require "health_inspector/cli"
 require 'chef/rest'
 require 'chef/checksum_cache'
+require 'chef/version'
 
 module HealthInspector
 end

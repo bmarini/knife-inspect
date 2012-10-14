@@ -27,6 +27,14 @@ module HealthInspector
         @context = context
       end
 
+      # Subclasses should collect all items from the server and the local repo,
+      # and for each item pair, yield an object that contains a reference to
+      # the server item, and the local repo item. A reference can be nil if it does
+      # not exist in one of the locations.
+      def each_item
+        raise NotImplementedError, "You must implement this method in a subclass"
+      end
+
       def run
         banner "Inspecting #{self.class.title}"
 
@@ -75,6 +83,7 @@ module HealthInspector
             memo
           end
         end
+
       end
 
       def chef_rest

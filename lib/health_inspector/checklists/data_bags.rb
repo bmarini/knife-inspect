@@ -24,7 +24,7 @@ module HealthInspector
           item = DataBag.new.tap do |data_bag|
             data_bag.name = name
             data_bag.exists_on_server = data_bags_on_server.include?(name)
-            data_bag.exists_locally = data_bags_in_repo.include?(name)
+            data_bag.exists_locally   = data_bags_in_repo.include?(name)
           end
 
           yield item

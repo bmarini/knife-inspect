@@ -4,11 +4,11 @@ module HealthInspector
     class Cookbooks < Base
 
       add_check "local copy exists" do
-        failure( "exists on chef server but not locally" ) if item.path.nil?
+        failure( "exists on server but not locally" ) if item.path.nil?
       end
 
       add_check "server copy exists" do
-        failure( "exists locally but not on chef server" ) if item.server_version.nil?
+        failure( "exists locally but not on server" ) if item.server_version.nil?
       end
 
       add_check "versions" do

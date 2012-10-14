@@ -1,7 +1,5 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'minitest/autorun'
-require 'mocha'
 require 'health_inspector'
 
 module HealthInspector::SpecHelpers
@@ -16,6 +14,6 @@ module HealthInspector::SpecHelpers
   end
 end
 
-class MiniTest::Unit::TestCase
-  include HealthInspector::SpecHelpers
+RSpec.configure do |c|
+  c.include HealthInspector::SpecHelpers
 end

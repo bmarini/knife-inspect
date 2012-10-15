@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/bmarini/health_inspector.png)](http://travis-ci.org/bmarini/health_inspector)
+
 ## Summary
 
 `health_inspector` is tool to inspect your chef repo as it compares to what is

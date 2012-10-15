@@ -6,7 +6,7 @@ module HealthInspector
       title "environments"
 
       add_check "local copy exists" do
-        failure "exists on server but not locally" unless item.local
+        failure "exists on server but not locally" unless item.local || item.name == '_default'
       end
 
       add_check "server copy exists" do

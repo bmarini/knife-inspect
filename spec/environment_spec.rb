@@ -38,4 +38,10 @@ describe "HealthInspector::Checklists::Environments" do
     failures.should be_empty
   end
 
+  it "should ignore _default environment if it only exists on server" do
+    obj = item.new("_default", {}, nil)
+
+    failures = subject.run_checks(obj)
+    failures.should be_empty
+  end
 end

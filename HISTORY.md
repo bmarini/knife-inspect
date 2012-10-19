@@ -1,3 +1,7 @@
+## 0.5.2 ( 2012-10-19 )
+
+* Make loading of Chef Config a little more robust.
+
 ## 0.5.1 ( 2012-10-15 )
 
 * Ignore _default environment if it only exists on the server.

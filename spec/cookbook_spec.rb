@@ -1,26 +1,41 @@
 require 'spec_helper'
 
-describe "HealthInspector::Checklists::Cookbooks" do
-  subject do
-    HealthInspector::Checklists::Cookbooks.new(health_inspector_context)
+describe HealthInspector::Checklists::Cookbook do
+  let(:pairing) { described_class.new(health_inspector_context, :name => "dummy") }
+
+  it "should detect if an item does not exist locally" do
+    pairing.server = "0.0.1"
+    pairing.local  = nil
+    pairing.validate
+
+    pairing.errors.should_not be_empty
+    pairing.errors.first.should == "exists on server but not locally"
   end
 
-  # :name, :path, :server_version, :local_version, :bad_files
-  let(:item) { HealthInspector::Checklists::Cookbooks::Cookbook }
+  it "should detect if an item does not exist on server" do
+    pairing.server = nil
+    pairing.local  = "0.0.1"
+    pairing.validate
 
-  it "should detect if a cookbook does not exist locally" do
-    obj = item.new("ruby", nil, "0.0.1", nil, [])
-
-    failures = subject.run_checks(obj)
-    failures.should_not be_empty
-    failures.first.should == "exists on server but not locally"
+    pairing.errors.should_not be_empty
+    pairing.errors.first.should == "exists locally but not on server"
   end
 
-  it "should detect if a cookbook does not exist on server" do
-    obj = item.new("ruby", "cookbooks/ruby", nil, "0.0.1", [])
+  it "should detect if an item is different" do
+    pairing.server = "0.0.1"
+    pairing.local  = "0.0.2"
+    pairing.validate
 
-    failures = subject.run_checks(obj)
-    failures.should_not be_empty
-    failures.first.should == "exists locally but not on server"
+    pairing.errors.should_not be_empty
+    pairing.errors.first.should == "chef server has 0.0.1 but local version is 0.0.2"
+  end
+
+  it "should detect if an item is the same" do
+    pairing.should_receive(:validate_changes_on_the_server_not_in_the_repo)
+    pairing.server = "0.0.1"
+    pairing.local  = "0.0.1"
+    pairing.validate
+
+    pairing.errors.should be_empty
   end
 end

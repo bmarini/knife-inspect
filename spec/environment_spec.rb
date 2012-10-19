@@ -1,47 +1,18 @@
 require 'spec_helper'
 
-describe "HealthInspector::Checklists::Environments" do
-  subject do
-    HealthInspector::Checklists::Environments.new(health_inspector_context)
-  end
+describe HealthInspector::Checklists::Environment do
+  let(:pairing) { described_class.new(health_inspector_context) }
 
-  let(:item) { HealthInspector::Checklists::Environments::Environment }
-
-  it "should detect if an environment does not exist locally" do
-    obj = item.new("production", {}, nil)
-
-    failures = subject.run_checks(obj)
-    failures.should_not be_empty
-    failures.first.should == "exists on server but not locally"
-  end
-
-  it "should detect if an environment does not exist on server" do
-    obj = item.new("production", nil, {})
-
-    failures = subject.run_checks(obj)
-    failures.should_not be_empty
-    failures.first.should == "exists locally but not on server"
-  end
-
-  it "should detect if an environment is different" do
-    obj = item.new("production", {"foo" => "bar"}, {"foo" => "baz"})
-
-    failures = subject.run_checks(obj)
-    failures.should_not be_empty
-    failures.first.should == {"foo"=>{"server"=>"bar", "local"=>"baz"}}
-  end
-
-  it "should detect if an environment is the same" do
-    obj = item.new("production", {}, {})
-
-    failures = subject.run_checks(obj)
-    failures.should be_empty
-  end
+  it_behaves_like "a chef model"
+  it_behaves_like "a chef model that can be respresented in json"
 
   it "should ignore _default environment if it only exists on server" do
-    obj = item.new("_default", {}, nil)
+    pairing.name   = "_default"
+    pairing.server = {}
+    pairing.local  = nil
+    pairing.validate
 
-    failures = subject.run_checks(obj)
-    failures.should be_empty
+    pairing.errors.should be_empty
   end
+
 end

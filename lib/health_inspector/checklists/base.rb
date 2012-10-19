@@ -7,12 +7,7 @@ module HealthInspector
       include Color
 
       class << self
-        attr_reader :checks, :title
-
-        def add_check(name, &block)
-          @checks ||= []
-          @checks << block
-        end
+        attr_reader :title
 
         def title(val=nil)
           val.nil? ? @title : @title = val
@@ -39,7 +34,8 @@ module HealthInspector
         banner "Inspecting #{self.class.title}"
 
         each_item do |item|
-          failures = run_checks(item)
+          item.validate
+          failures = item.errors
 
           if failures.empty?
             print_success(item.name) unless @context.quiet_success
@@ -49,51 +45,8 @@ module HealthInspector
         end
       end
 
-      def run_checks(item)
-        checks.map { |check| run_check(check, item) }.compact
-      end
-
-      def checks
-        self.class.checks
-      end
-
-      class CheckContext
-        include Check, Color
-        attr_accessor :item, :context
-
-        def initialize(check, item, context)
-          @item = item
-          @context = context
-          @check = check
-        end
-
-        def call
-          instance_eval(&@check)
-        end
-
-        def diff(original, other)
-          (original.keys + other.keys).uniq.inject({}) do |memo, key|
-            unless original[key] == other[key]
-              if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
-                memo[key] = diff(original[key], other[key])
-              else
-                memo[key] = {"server" => original[key],"local" => other[key]}
-              end
-            end
-            memo
-          end
-        end
-
-      end
-
       def chef_rest
         @context.chef_rest
-      end
-
-      def run_check(check, item)
-        check_context = CheckContext.new(check, item, @context)
-        check_context.call
-        return check_context.failure
       end
 
       def banner(message)

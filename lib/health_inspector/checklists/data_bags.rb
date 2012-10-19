@@ -2,18 +2,12 @@ require "chef/data_bag"
 
 module HealthInspector
   module Checklists
+    class DataBag < Pairing
+      include ExistenceValidations
+    end
+
     class DataBags < Base
       title "data bags"
-
-      add_check "local copy exists" do
-        failure "exists on server but not locally" unless item.exists_locally
-      end
-
-      add_check "server copy exists" do
-        failure "exists locally but not on server" unless item.exists_on_server
-      end
-
-      DataBag = Struct.new(:name, :exists_on_server, :exists_locally)
 
       def each_item
         server_data_bags   = data_bags_on_server
@@ -21,11 +15,11 @@ module HealthInspector
         all_data_bag_names = ( server_data_bags + local_data_bags ).uniq.sort
 
         all_data_bag_names.each do |name|
-          item = DataBag.new.tap do |data_bag|
-            data_bag.name = name
-            data_bag.exists_on_server = data_bags_on_server.include?(name)
-            data_bag.exists_locally   = data_bags_in_repo.include?(name)
-          end
+          item = DataBag.new(@context,
+            :name   => name,
+            :server => data_bags_on_server.include?(name),
+            :local  => data_bags_in_repo.include?(name)
+          )
 
           yield item
         end

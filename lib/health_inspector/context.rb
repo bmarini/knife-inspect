@@ -14,7 +14,11 @@ module HealthInspector
     end
 
     def configure
-      Chef::Config.from_file(config_path)
+      begin
+        Chef::Config.from_file(config_path)
+      rescue LoadError
+        Chef::Config.from_file("#{ENV['PWD']}/#{config_path}")
+      end
       Chef::Config
     end
 

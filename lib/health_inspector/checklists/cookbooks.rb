@@ -1,56 +1,93 @@
 module HealthInspector
   module Checklists
 
-    class Cookbooks < Base
+    class Cookbook < Pairing
+      include ExistenceValidations
 
-      add_check "local copy exists" do
-        failure( "exists on server but not locally" ) if item.path.nil?
-      end
-
-      add_check "server copy exists" do
-        failure( "exists locally but not on server" ) if item.server_version.nil?
-      end
-
-      add_check "versions" do
-        if item.local_version && item.server_version &&
-          item.local_version != item.server_version
-          failure "chef server has #{item.server_version} but local version is #{item.local_version}"
+      def validate_versions
+        if versions_exist? && !versions_match?
+          errors.add "chef server has #{server} but local version is #{local}"
         end
       end
 
-      add_check "uncommitted changes" do
-        if item.git_repo?
-          result = `cd #{item.path} && git status -s`
+      def validate_uncommited_changes
+        if git_repo?
+          result = `cd #{cookbook_path} && git status -s`
 
           unless result.empty?
-            failure "Uncommitted changes:\n#{result.chomp}"
+            errors.add "Uncommitted changes:\n#{result.chomp}"
           end
         end
       end
 
-      add_check "commits not pushed to remote" do
-        if item.git_repo?
-          result = `cd #{item.path} && git status`
+      def validate_commits_not_pushed_to_remote
+        if git_repo?
+          result = `cd #{cookbook_path} && git status`
 
           if result =~ /Your branch is ahead of (.+)/
-            failure "ahead of #{$1}"
+            errors.add "ahead of #{$1}"
           end
         end
       end
 
-      add_check "changes on the server not in the repo" do
-        if item.server_version == item.local_version && !item.bad_files.empty?
-          fail_message = "has a checksum mismatch between server and repo in\n"
-          fail_message << item.bad_files.map { |f| "    #{f}" }.join("\n")
-          failure fail_message 
+      # TODO: Check files that exist locally but not in manifest on server
+      def validate_changes_on_the_server_not_in_the_repo
+        if versions_exist? && versions_match?
+
+          begin
+            cookbook = context.chef_rest.get_rest("/cookbooks/#{name}/#{local}")
+            messages = []
+
+            Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+              cookbook.manifest[segment].each do |manifest_record|
+                path = cookbook_path.join("#{manifest_record["path"]}")
+
+                if path.exist?
+                  checksum = checksum_cookbook_file(path)
+                  messages << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
+                else
+                  messages << "#{manifest_record['path']} does not exist in the repo"
+                end
+              end
+            end
+
+            unless messages.empty?
+              message = "has a checksum mismatch between server and repo in\n"
+              message << messages.map { |f| "    #{f}" }.join("\n")
+              errors.add message
+            end
+
+          rescue Net::HTTPServerException => e
+            errors.add "Could not find cookbook #{name} on the server"
+          end
+
         end
       end
 
-      class Cookbook < Struct.new(:name, :path, :server_version, :local_version, :bad_files)
-        def git_repo?
-          self.path && File.exist?("#{self.path}/.git")
-        end
+      def versions_exist?
+        local && server
       end
+
+      def versions_match?
+        local == server
+      end
+
+      def git_repo?
+        cookbook_path && File.exist?("#{cookbook_path}/.git")
+      end
+
+      def cookbook_path
+        path = context.cookbook_path.find { |f| File.exist?("#{f}/#{name}") }
+        path ? Pathname.new(path).join(name) : nil
+      end
+
+      def checksum_cookbook_file(filepath)
+        Chef::CookbookVersion.checksum_cookbook_file(filepath)
+      end
+
+    end
+
+    class Cookbooks < Base
 
       title "cookbooks"
 
@@ -60,13 +97,11 @@ module HealthInspector
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
 
         all_cookbook_names.each do |name|
-          item = Cookbook.new.tap do |cookbook|
-            cookbook.name           = name
-            cookbook.path           = cookbook_path(name)
-            cookbook.server_version = server_cookbooks[name]
-            cookbook.local_version  = local_cookbooks[name]
-            cookbook.bad_files      = checksum_compare(name, cookbook.server_version.inspect)
-          end
+          item = Cookbook.new(@context,
+            :name   => name,
+            :server => server_cookbooks[name],
+            :local  => local_cookbooks[name]
+          )
 
           yield item
         end
@@ -94,40 +129,6 @@ module HealthInspector
           end
       end
 
-      def cookbook_path(name)
-        path = @context.cookbook_path.find { |f| File.exist?("#{f}/#{name}") }
-        path ? File.join(path, name) : nil
-      end
-
-      # TODO: Check files that exist locally but not in manifest on server
-      def checksum_compare(name, version)
-        begin
-          cookbook = chef_rest.get_rest("/cookbooks/#{name}/#{version}")
-        rescue Net::HTTPServerException => e
-          return ["Could not find cookbook #{name} on the server"]
-        end
-
-        bad_files = []
-
-        Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
-          cookbook.manifest[segment].each do |manifest_record|
-            path = cookbook_path("#{name}/#{manifest_record["path"]}")
-
-            if path
-              checksum = checksum_cookbook_file(path)
-              bad_files << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
-            else
-              bad_files << "#{manifest_record['path']} does not exist in the repo"
-            end
-          end
-        end
-
-        bad_files
-      end
-
-      def checksum_cookbook_file(filepath)
-        Chef::CookbookVersion.checksum_cookbook_file(filepath)
-      end
     end
   end
 end

@@ -2,25 +2,13 @@ require "chef/data_bag"
 
 module HealthInspector
   module Checklists
+    class DataBagItem < Pairing
+      include ExistenceValidations
+      include JsonValidations
+    end
+
     class DataBagItems < Base
       title "data bag items"
-
-      add_check "local copy exists" do
-        failure "exists on server but not locally" unless item.local
-      end
-
-      add_check "server copy exists" do
-        failure "exists locally but not on server" unless item.server
-      end
-
-      add_check "items are the same" do
-        if item.server && item.local
-          item_diff = diff(item.server, item.local)
-          failure item_diff unless item_diff.empty?
-        end
-      end
-
-      DataBagItem = Struct.new(:name, :server, :local)
 
       def each_item
         server_data_bag_items   = data_bag_items_on_server
@@ -28,11 +16,11 @@ module HealthInspector
         all_data_bag_item_names = ( server_data_bag_items + local_data_bag_items ).uniq.sort
 
         all_data_bag_item_names.each do |name|
-          item = DataBagItem.new.tap do |data_bag_item|
-            data_bag_item.name   = name
-            data_bag_item.server = load_item_from_server(name)
-            data_bag_item.local  = load_item_from_local(name)
-          end
+          item = DataBagItem.new(@context,
+            :name   => name,
+            :server => load_item_from_server(name),
+            :local  => load_item_from_local(name)
+          )
 
           yield item
         end

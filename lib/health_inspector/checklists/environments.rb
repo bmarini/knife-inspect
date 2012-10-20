@@ -16,10 +16,6 @@ module HealthInspector
       title "environments"
 
       def each_item
-        server_items   = items_on_server
-        local_items    = items_in_repo
-        all_item_names = ( server_items + local_items ).uniq.sort
-
         all_item_names.each do |name|
           item = Environment.new(@context,
             :name   => name,
@@ -31,11 +27,11 @@ module HealthInspector
         end
       end
 
-      def items_on_server
-        @items_on_server ||= Chef::Environment.list.keys
+      def server_items
+        @server_items ||= Chef::Environment.list.keys
       end
 
-      def items_in_repo
+      def local_items
         Dir.chdir("#{@context.repo_path}/environments") do
           Dir["*.{rb,json,js}"].map { |e| e.gsub(/\.(rb|json|js)/,"") }
         end

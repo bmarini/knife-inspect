@@ -14,12 +14,16 @@ module HealthInspector
         end
       end
 
-      def self.run(context)
-        new(context).run
+      def self.run(knife)
+        new(knife).run
       end
 
-      def initialize(context)
-        @context = context
+      def initialize(knife)
+        @context = Context.new(knife)
+      end
+
+      def ui
+        @context.knife.ui
       end
 
       def all_item_names
@@ -38,33 +42,33 @@ module HealthInspector
         banner "Inspecting #{self.class.title}"
 
         each_item do |item|
-          item.validate
-          failures = item.errors
-
-          if failures.empty?
-            print_success(item.name) unless @context.quiet_success
-          else
-            print_failures(item.name, failures)
-          end
+          validate_item(item)
         end
       end
 
-      def chef_rest
-        @context.chef_rest
+      def validate_item(item)
+        item.validate
+        failures = item.errors
+
+        if failures.empty?
+          print_success(item.name) # unless @context.quiet_success
+        else
+          print_failures(item.name, failures)
+        end
       end
 
       def banner(message)
-        puts
-        puts message
-        puts "-" * 80
+        ui.msg ""
+        ui.msg message
+        ui.msg "-" * 80
       end
 
       def print_success(subject)
-        puts color('bright pass', "✓") + " #{subject}"
+        ui.msg color('bright pass', "✓") + " #{subject}"
       end
 
       def print_failures(subject, failures)
-        puts color('bright fail', "- #{subject}")
+        ui.msg color('bright fail', "- #{subject}")
 
         failures.each do |message|
           if message.kind_of? Hash
@@ -91,7 +95,7 @@ module HealthInspector
       end
 
       def print_key(key, depth)
-        puts indent( color('bright yellow',"#{key} : "), depth )
+        ui.msg indent( color('bright yellow',"#{key} : "), depth )
       end
 
       def print_value_diff(value, depth)

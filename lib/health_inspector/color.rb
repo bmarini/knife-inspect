@@ -2,32 +2,28 @@ module HealthInspector
   module Color
     def color(type, str)
       colors = {
-        'pass'          => 90,
-        'fail'          => 31,
-        'bright pass'   => 92,
-        'bright fail'   => 91,
-        'bright yellow' => 93,
-        'pending'       => 36,
-        'suite'         => 0,
-        'error title'   => 0,
-        'error message' => 31,
-        'error stack'   => 90,
-        'checkmark'     => 32,
-        'fast'          => 90,
-        'medium'        => 33,
-        'slow'          => 31,
-        'green'         => 32,
-        'light'         => 90,
-        'diff gutter'   => 90,
-        'diff added'    => 42,
-        'diff removed'  => 41
+        'pass'          => [:green],# 90,
+        'fail'          => [:red],# 31,
+        'bright pass'   => [:bold, :green],# 92,
+        'bright fail'   => [:bold, :red],# 91,
+        'bright yellow' => [:bold, :yellow],# 93,
+        'pending'       => [:yellow],# 36,
+        'suite'         => [],# 0,
+        'error title'   => [],# 0,
+        'error message' => [:red],# 31,
+        'error stack'   => [:green],# 90,
+        'checkmark'     => [:green],# 32,
+        'fast'          => [:green],# 90,
+        'medium'        => [:green],# 33,
+        'slow'          => [:red],# 31,
+        'green'         => [:green],# 32,
+        'light'         => [:green],# 90,
+        'diff gutter'   => [:green],# 90,
+        'diff added'    => [:green],# 42,
+        'diff removed'  => [:red]# 41
       }
 
-      if @context.no_color
-        str
-      else
-      "\e[%sm%s\e[0m" % [ colors[type], str ]
-      end
+      @context.knife.ui.color( str, *colors[type] )
     end
   end
 end

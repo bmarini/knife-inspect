@@ -35,7 +35,7 @@ module HealthInspector
         if versions_exist? && versions_match?
 
           begin
-            cookbook = context.chef_rest.get_rest("/cookbooks/#{name}/#{local}")
+            cookbook = context.rest.get_rest("/cookbooks/#{name}/#{local}")
             messages = []
 
             Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
@@ -92,29 +92,29 @@ module HealthInspector
       title "cookbooks"
 
       def each_item
-        server_cookbooks   = cookbooks_on_server
-        local_cookbooks    = cookbooks_in_repo
         all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
 
         all_cookbook_names.each do |name|
-          item = Cookbook.new(@context,
-            :name   => name,
-            :server => server_cookbooks[name],
-            :local  => local_cookbooks[name]
-          )
-
-          yield item
+          yield load_item(name)
         end
       end
 
-      def cookbooks_on_server
-        chef_rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
+      def load_item(name)
+        Cookbook.new(@context,
+          :name   => name,
+          :server => server_cookbooks[name],
+          :local  => local_cookbooks[name]
+        )
+      end
+
+      def server_cookbooks
+        @context.rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
           hsh[name] = Chef::Version.new(version["versions"].first["version"])
           hsh
         end
       end
 
-      def cookbooks_in_repo
+      def local_cookbooks
         @context.cookbook_path.
           map { |path| Dir["#{path}/*"] }.
           flatten.

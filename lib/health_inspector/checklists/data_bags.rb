@@ -11,14 +11,16 @@ module HealthInspector
 
       def each_item
         all_item_names.each do |name|
-          item = DataBag.new(@context,
-            :name   => name,
-            :server => server_items.include?(name),
-            :local  => local_items.include?(name)
-          )
-
-          yield item
+          yield load_item(name)
         end
+      end
+
+      def load_item(name)
+        DataBag.new(@context,
+          :name   => name,
+          :server => server_items.include?(name),
+          :local  => local_items.include?(name)
+        )
       end
 
       def server_items

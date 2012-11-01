@@ -19,5 +19,9 @@ module HealthInspector
     def rest
       @knife.rest
     end
+
+    def repo_path
+      ENV['PWD']
+    end
   end
 end

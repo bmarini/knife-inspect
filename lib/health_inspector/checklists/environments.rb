@@ -17,14 +17,16 @@ module HealthInspector
 
       def each_item
         all_item_names.each do |name|
-          item = Environment.new(@context,
-            :name   => name,
-            :server => load_item_from_server(name),
-            :local  => load_item_from_local(name)
-          )
-
-          yield item
+          yield load_item(name)
         end
+      end
+
+      def load_item(name)
+        Environment.new(@context,
+          :name   => name,
+          :server => load_item_from_server(name),
+          :local  => load_item_from_local(name)
+        )
       end
 
       def server_items

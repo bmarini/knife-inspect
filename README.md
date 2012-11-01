@@ -2,15 +2,31 @@
 
 ## Summary
 
-`health_inspector` is tool to inspect your chef repo as it compares to what is
-on your chef server.
+`health_inspector` is a knife plugin that inspects your chef repo as it
+compares to what is on your chef server. You can inspect your entire repo,
+or individual components.
 
 ## Usage
 
     $ gem install health_inspector
-    $ cd [chef repo] && health_inspector inspect
+    $ cd [chef repo]
 
-Run `health_inspector help` for more options
+## Knife Ccmmands
+
+    knife inspect
+
+    knife cookbook inspect
+    knife cookbook inspect [COOKBOOK]
+
+    knife data bag inspect
+    knife data bag inspect [BAG]
+    knife data bag inspect [BAG] [ITEM]
+
+    knife environment inspect
+    knife environment inspect [ENVIRONMENT]
+
+    knife role inspect
+    knife role inspect [ROLE]
 
 ## What it does
 

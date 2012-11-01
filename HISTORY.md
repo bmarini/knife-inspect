@@ -1,3 +1,15 @@
+## 0.6.0 ( 2012-11-1 )
+
+* Add knife plugins for all existing functionality:
+  - knife inspect
+  - knife cookbook inspect [COOKBOOK]
+  - knife data bag inspect [BAG] [ITEM]
+  - knife environment inspect [ENVIRONMENT]
+  - knife role inspect [ROLE]
+
+* Lost support for quiet-sucess option (We can add that back, or make a quiet
+  options that just returns exit status).
+
 ## 0.5.2 ( 2012-10-19 )
 
 * Make loading of Chef Config a little more robust.

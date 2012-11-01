@@ -1,5 +1,7 @@
 module HealthInspector
   module Color
+
+    # TODO: Use a highline color scheme here instead
     def color(type, str)
       colors = {
         'pass'          => [:green],# 90,

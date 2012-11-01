@@ -11,13 +11,9 @@ class Chef
       banner "knife inspect"
 
       def run
-        @context        = HealthInspector::Context.new
-        @context.config = Chef::Config
-
         %w[ Cookbooks DataBags DataBagItems Environments Roles ].each do |checklist|
-          HealthInspector::Checklists.const_get(checklist).run(@context)
+          HealthInspector::Checklists.const_get(checklist).run(self)
         end
-
       end
     end
   end

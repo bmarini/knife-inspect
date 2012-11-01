@@ -11,7 +11,7 @@ or individual components.
     $ gem install health_inspector
     $ cd [chef repo]
 
-## Knife Ccmmands
+## Knife Commands
 
     knife inspect
 

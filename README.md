@@ -2,7 +2,7 @@
 
 ## Summary
 
-`health_inspector` is a knife plugin that inspects your chef repo as it
+`knife-inspect` is a knife plugin that inspects your chef repo as it
 compares to what is on your chef server. You can inspect your entire repo,
 or individual components.
 

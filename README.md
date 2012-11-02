@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/bmarini/health_inspector.png)](http://travis-ci.org/bmarini/health_inspector)
+[![Build Status](https://secure.travis-ci.org/bmarini/knife-inspect.png)](http://travis-ci.org/bmarini/knife-inspect)
 
 ## Summary
 

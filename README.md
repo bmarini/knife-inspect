@@ -8,7 +8,7 @@ or individual components.
 
 ## Usage
 
-    $ gem install health_inspector
+    $ gem install knife-inspect
     $ cd [chef repo]
 
 ## Knife Commands

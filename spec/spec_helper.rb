@@ -86,25 +86,9 @@ shared_examples "a chef model that can be respresented in json" do
     pairing.errors.should be_empty
   end
   
-  it "should detect if matching arrays are the same" do
-    pairing.server = {"foo" => ["bar", "fizz"]}
-    pairing.local  = {"foo" => ["fizz", "bar"]}
-    pairing.validate
-  
-    pairing.errors.should be_empty
-  end
-  
   it "should detect if matching arrays with hashes are the same" do
     pairing.server = {"foo" => ["bar", {"fizz" => "buzz"}]}
     pairing.local  = {"foo" => ["bar", {"fizz" => "buzz"}]}
-    pairing.validate
-  
-    pairing.errors.should be_empty
-  end
-  
-  it "should detect if matching arrays with hashes are the same even if misordered" do
-    pairing.server = {"foo" => ["bar", {"fizz" => "buzz"}]}
-    pairing.local  = {"foo" => [{"fizz" => "buzz"}, "bar"]}
     pairing.validate
   
     pairing.errors.should be_empty

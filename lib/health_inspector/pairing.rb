@@ -53,26 +53,12 @@ module HealthInspector
       if item.kind_of?(Hash)
         stringify_hash_keys(item)
       elsif item.kind_of?(Array)
-        mapped = item.map {|array_item| stringify_item(array_item) }
-        mapped.sort {|a,b| heterogeneous_sort(a,b)}
+        item.map {|array_item| stringify_item(array_item) }
       else # must be a string
         item
       end
     end
     
-    def heterogeneous_sort(a, b)
-      a_class = a.class.to_s
-      b_class = b.class.to_s
-      
-      if a.kind_of?(Hash) && b.kind_of?(Hash)
-        a.keys.sort.join <=> b.keys.sort.join
-      elsif a_class == b_class
-        return a <=> b
-      else
-        return a_class <=> b_class
-      end
-    end
-  
     def recursive_diff(original, other)
       if original.kind_of?(Hash) && other.kind_of?(Hash)
         (original.keys + other.keys).uniq.inject({}) do |memo, key|
@@ -80,21 +66,12 @@ module HealthInspector
             if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
               diff = recursive_diff(original[key], other[key])
               memo[key] = diff unless diff.empty?
-            elsif original[key].kind_of?(Array) && other[key].kind_of?(Array) && original.size == other.size
-              all_diffs = []
-              original.each_index do |idx|
-                diff = recursive_diff(original[idx], other[idx])
-                all_diffs << diff unless diff.nil? || diff.empty?
-              end
-              memo[key] = all_diffs
             else
               memo[key] = {"server" => original[key], "local" => other[key]}
             end
           end
           memo
         end
-      else
-        return original == other
       end
     end
   end

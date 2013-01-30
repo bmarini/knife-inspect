@@ -60,18 +60,16 @@ module HealthInspector
     end
     
     def recursive_diff(original, other)
-      if original.kind_of?(Hash) && other.kind_of?(Hash)
-        (original.keys + other.keys).uniq.inject({}) do |memo, key|
-          unless original[key] == other[key]
-            if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
-              diff = recursive_diff(original[key], other[key])
-              memo[key] = diff unless diff.empty?
-            else
-              memo[key] = {"server" => original[key], "local" => other[key]}
-            end
+      (original.keys + other.keys).uniq.inject({}) do |memo, key|
+        unless original[key] == other[key]
+          if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
+            diff = recursive_diff(original[key], other[key])
+            memo[key] = diff unless diff.empty?
+          else
+            memo[key] = {"server" => original[key], "local" => other[key]}
           end
-          memo
         end
+        memo
       end
     end
   end

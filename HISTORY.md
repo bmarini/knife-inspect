@@ -1,3 +1,7 @@
+## 0.6.2 ( 2013-02-27 )
+
+* Be indifferent about symbols and strings for hash keys when diff'ing
+
 ## 0.6.0 ( 2012-11-1 )
 
 * Add knife plugins for all existing functionality:

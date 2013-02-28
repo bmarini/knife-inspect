@@ -41,16 +41,64 @@ shared_examples "a chef model that can be respresented in json" do
     pairing.server = {"foo" => "bar"}
     pairing.local  = {"foo" => "baz"}
     pairing.validate
-
+  
     pairing.errors.should_not be_empty
     pairing.errors.first.should == {"foo"=>{"server"=>"bar", "local"=>"baz"}}
   end
-
+  
   it "should detect if an item is the same" do
     pairing.server = {"foo" => "bar"}
     pairing.local  = {"foo" => "bar"}
     pairing.validate
-
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if an string and symbol keys convert to the same values" do
+    pairing.server = {"foo" => "bar"}
+    pairing.local  = {:foo => "bar"}
+    pairing.validate
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if matching hashes are the same" do
+    pairing.server = {"foo" => {"bar" => "fizz"}}
+    pairing.local  = {"foo" => {"bar" => "fizz"}}
+    pairing.validate
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if matching hashes with mismatched symbols and keys are the same" do
+    pairing.server = {"foo" => {"bar" => "fizz"}}
+    pairing.local  = {:foo => {:bar => "fizz"}}
+    pairing.validate
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if matching arrays are the same" do
+    pairing.server = {"foo" => ["bar", "fizz"]}
+    pairing.local  = {"foo" => ["bar", "fizz"]}
+    pairing.validate
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if matching arrays with hashes are the same" do
+    pairing.server = {"foo" => ["bar", {"fizz" => "buzz"}]}
+    pairing.local  = {"foo" => ["bar", {"fizz" => "buzz"}]}
+    pairing.validate
+  
+    pairing.errors.should be_empty
+  end
+  
+  it "should detect if matching arrays with hashes containing symbols/strings are the same" do
+    pairing.server = {"foo" => ["bar", {"fizz" => "buzz"}]}
+    pairing.local  = {"foo" => ["bar", {:fizz => "buzz"}]}
+    pairing.validate
+  
     pairing.errors.should be_empty
   end
 end

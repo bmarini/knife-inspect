@@ -10,7 +10,7 @@ class Chef
 
       banner "knife environment inspect [ENVIRONMENT] (options)"
 
-      def run 
+      def run
         case @name_args.length
         when 1 # We are inspecting a environment
           environment_name = @name_args[0]

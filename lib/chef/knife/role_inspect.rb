@@ -10,7 +10,7 @@ class Chef
 
       banner "knife role inspect [ROLE] (options)"
 
-      def run 
+      def run
         case @name_args.length
         when 1 # We are inspecting a role
           role_name = @name_args[0]

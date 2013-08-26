@@ -103,7 +103,7 @@ module HealthInspector
         print value["server"]
         print "\n"
         print indent( color('bright fail',"local value  = "), depth + 1 )
-        print value["local"] 
+        print value["local"]
         print "\n\n"
       end
 

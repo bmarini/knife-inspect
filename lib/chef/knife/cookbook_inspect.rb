@@ -13,7 +13,7 @@ class Chef
 
       banner "knife cookbook inspect [COOKBOOK] (options)"
 
-      def run 
+      def run
         case @name_args.length
         when 1 # We are inspecting a cookbook
           cookbook_name = @name_args[0]

@@ -22,9 +22,9 @@ class Chef
           # api_endpoint  = env ? "environments/#{env}/cookbooks/#{cookbook_name}" : "cookbooks/#{cookbook_name}"
 
           validator = HealthInspector::Checklists::Cookbooks.new(self)
-          validator.validate_item( validator.load_item(cookbook_name) )
+          exit validator.validate_item( validator.load_item(cookbook_name) )
         when 0 # We are inspecting all the cookbooks
-          HealthInspector::Checklists::Cookbooks.run(self)
+          exit HealthInspector::Checklists::Cookbooks.run(self)
         end
       end
     end

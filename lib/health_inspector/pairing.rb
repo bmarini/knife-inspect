@@ -41,14 +41,14 @@ module HealthInspector
     def hash_diff(original, other)
       recursive_diff(stringify_hash_keys(original), stringify_hash_keys(other))
     end
-    
+
     def stringify_hash_keys(original)
       original.keys.inject({}) do |original_strkey, key|
         original_strkey[key.to_s] = stringify_item(original[key])
         original_strkey
       end
     end
-    
+
     def stringify_item(item)
       if item.kind_of?(Hash)
         stringify_hash_keys(item)
@@ -58,7 +58,7 @@ module HealthInspector
         item
       end
     end
-    
+
     def recursive_diff(original, other)
       (original.keys + other.keys).uniq.inject({}) do |memo, key|
         unless original[key] == other[key]

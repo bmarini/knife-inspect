@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "simplecov", "~> 0.8.2"
 
   s.add_runtime_dependency "thor"
   s.add_runtime_dependency "chef", chef_version

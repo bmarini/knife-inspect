@@ -15,9 +15,9 @@ class Chef
         when 1 # We are inspecting a environment
           environment_name = @name_args[0]
           validator = HealthInspector::Checklists::Environments.new(self)
-          validator.validate_item( validator.load_item(environment_name) )
+          exit validator.validate_item( validator.load_item(environment_name) )
         when 0 # We are inspecting all the environments
-          HealthInspector::Checklists::Environments.run(self)
+          exit HealthInspector::Checklists::Environments.run(self)
         end
       end
     end

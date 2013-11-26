@@ -17,17 +17,17 @@ class Chef
           item_name = @name_args[1]
 
           validator = HealthInspector::Checklists::DataBagItems.new(self)
-          validator.validate_item( validator.load_item("#{bag_name}/#{item_name}") )
+          exit validator.validate_item( validator.load_item("#{bag_name}/#{item_name}") )
 
         when 1 # We are inspecting a data bag
           bag_name = @name_args[0]
 
           validator = HealthInspector::Checklists::DataBags.new(self)
-          validator.validate_item( validator.load_item(bag_name) )
+          exit validator.validate_item( validator.load_item(bag_name) )
 
         when 0 # We are inspecting all the data bags
           HealthInspector::Checklists::DataBags.run(self)
-          HealthInspector::Checklists::DataBagItems.run(self)
+          exit HealthInspector::Checklists::DataBagItems.run(self)
         end
       end
     end

@@ -41,9 +41,13 @@ module HealthInspector
       def run
         banner "Inspecting #{self.class.title}"
 
+        results = []
+
         each_item do |item|
-          validate_item(item)
+          results << validate_item(item)
         end
+
+        return ! results.include?(false)
       end
 
       def validate_item(item)
@@ -52,8 +56,12 @@ module HealthInspector
 
         if failures.empty?
           print_success(item.name) # unless @context.quiet_success
+
+          true
         else
           print_failures(item.name, failures)
+
+          false
         end
       end
 

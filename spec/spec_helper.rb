@@ -32,6 +32,14 @@ shared_examples "a chef model" do
     pairing.errors.should_not be_empty
     pairing.errors.first.should == "exists locally but not on server"
   end
+
+  it "should detect if an item does not exist locally or on server" do
+    pairing.server = nil
+    pairing.local  = nil
+    pairing.validate
+
+    pairing.errors.to_a.should == ["does not exist locally or on server"]
+  end
 end
 
 shared_examples "a chef model that can be respresented in json" do

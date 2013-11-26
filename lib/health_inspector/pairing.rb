@@ -76,6 +76,17 @@ module HealthInspector
 
   # Mixins for common validations across pairings
   module ExistenceValidations
+    def validate_existence
+      if local.nil? && server.nil?
+        errors.add "does not exist locally or on server"
+        return
+      end
+
+      validate_local_copy_exists
+      validate_server_copy_exists
+    end
+
+    private
     def validate_local_copy_exists
       errors.add "exists on server but not locally" if local.nil?
     end

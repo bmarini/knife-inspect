@@ -1,3 +1,17 @@
+## 0.7.0 ( 2014-01-03 )
+
+> It's alive! Thanks a lot to Ben Marini for starting this project!
+> I'm happy to be the new maintainer of knife-inspect, this is an essential
+> tool for all users Chef Server users.
+>
+> -- [Greg Karékinian](https://github.com/gregkare)
+
+* The plugin is now compatible with Chef 11 ([#6][#6])
+* Fix inspect for something non-existent ([#2][#2])
+* Exit with the proper status (0 for success, 1 for failure) ([#14][#14])
+* Remove dependency on thor ([#15][#15])
+* Specify version of the yajl-ruby gem (same as Chef)
+
 ## 0.6.2 ( 2013-02-27 )
 
 * Be indifferent about symbols and strings for hash keys when diff'ing
@@ -90,3 +104,9 @@
 ## 0.0.1 ( 2012-03-27 )
 
 * Initial release.
+
+
+[#15]: https://github.com/bmarini/knife-inspect/issues/15
+[#14]: https://github.com/bmarini/knife-inspect/issues/14
+[#6]: https://github.com/bmarini/knife-inspect/issues/6
+[#2]: https://github.com/bmarini/knife-inspect/issues/2

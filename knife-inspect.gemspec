@@ -17,16 +17,16 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.homepage    = 'https://github.com/bmarini/knife-inspect'
   s.summary     = 'Inspect your chef repo as it is compared to what is on your chef server'
-  s.description = 'Inspect your chef repo as it is compared to what is on your chef server'
+  s.description = 'knife-inspect is a knife plugin to compare the content of your Chef repository and Chef server'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
-  s.add_development_dependency "rake"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "simplecov", "~> 0.8.2"
+  s.add_development_dependency 'rake',      '~> 10.1'
+  s.add_development_dependency 'rspec',     '~> 2.14'
+  s.add_development_dependency 'simplecov', '~> 0.8'
 
-  s.add_runtime_dependency "chef", chef_version
-  s.add_runtime_dependency "yajl-ruby"
+  s.add_runtime_dependency 'chef',      chef_version
+  s.add_runtime_dependency 'yajl-ruby', '~> 1.1'
 end

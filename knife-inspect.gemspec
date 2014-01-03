@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.version     = HealthInspector::VERSION
   s.authors     = ['Greg Karékinian', 'Ben Marini']
   s.email       = ['greg@karekinian.com']
+  s.license     = 'MIT'
   s.homepage    = 'https://github.com/bmarini/knife-inspect'
   s.summary     = 'Inspect your chef repo as it is compared to what is on your chef server'
   s.description = 'Inspect your chef repo as it is compared to what is on your chef server'

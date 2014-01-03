@@ -10,20 +10,17 @@ chef_version = if ENV.key?('CHEF_VERSION')
                end
 
 Gem::Specification.new do |s|
-  s.name        = "knife-inspect"
+  s.name        = 'knife-inspect'
   s.version     = HealthInspector::VERSION
-  s.authors     = ["Ben Marini"]
-  s.email       = ["bmarini@gmail.com"]
-  s.homepage    = "https://github.com/bmarini/knife-inspect"
-  s.summary     = %q{Inspect your chef repo as is compares to what is on your chef server}
-  s.description = %q{Inspect your chef repo as is compares to what is on your chef server}
-
-  s.rubyforge_project = "knife-inspect"
+  s.authors     = ['Greg Karékinian', 'Ben Marini']
+  s.email       = ['greg@karekinian.com']
+  s.homepage    = 'https://github.com/bmarini/knife-inspect'
+  s.summary     = 'Inspect your chef repo as it is compared to what is on your chef server'
+  s.description = 'Inspect your chef repo as it is compared to what is on your chef server'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ["lib"]
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"

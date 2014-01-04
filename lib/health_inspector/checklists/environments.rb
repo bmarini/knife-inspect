@@ -35,8 +35,7 @@ module HealthInspector
       end
 
       def load_item_from_server(name)
-        env = Chef::Environment.load(name)
-        env.to_hash
+        Chef::Environment.load(name).to_hash
       rescue
         nil
       end
@@ -45,6 +44,5 @@ module HealthInspector
         load_ruby_or_json_from_local(Chef::Environment, "environments", name)
       end
     end
-
   end
 end

@@ -73,6 +73,21 @@ shared_examples "a chef model that can be represented in json" do
     pairing.errors.first.should == {"foo"=>{"server"=>"bar", "local"=>"baz"}}
   end
 
+  it "should detect if a nested hash is different" do
+    pairing.server = {"foo" => {"bar" => {"fizz" => "buzz"}}}
+    pairing.local  = {"foo" => {"baz" => {"fizz" => "buzz"}}}
+    pairing.validate
+
+    pairing.errors.should_not be_empty
+    expected_errors = {
+      "foo" => {
+        "bar" => { "server" => {"fizz" => "buzz"}, "local" => nil },
+        "baz" => { "server" => nil, "local" => {"fizz" => "buzz"} }
+      }
+    }
+    pairing.errors.first.should == expected_errors
+  end
+
   it "should detect if an item is the same" do
     pairing.server = {"foo" => "bar"}
     pairing.local  = {"foo" => "bar"}

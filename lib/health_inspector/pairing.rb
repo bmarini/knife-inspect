@@ -37,7 +37,6 @@ module HealthInspector
       self.methods.grep(/^validate_/).each { |meth| send(meth) }
     end
 
-
     def hash_diff(original, other)
       recursive_diff(stringify_hash_keys(original), stringify_hash_keys(other))
     end

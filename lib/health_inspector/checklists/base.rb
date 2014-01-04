@@ -85,7 +85,7 @@ module HealthInspector
         ui.msg color('bright fail', "- #{subject}")
 
         failures.each do |message|
-          if message.kind_of? Hash
+          if message.is_a? Hash
             puts color('bright yellow',"  has the following values mismatched on the server and repo\n")
             print_failures_from_hash(message)
           else

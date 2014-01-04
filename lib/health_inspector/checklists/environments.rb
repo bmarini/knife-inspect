@@ -35,8 +35,8 @@ module HealthInspector
       end
 
       def local_items
-        Dir.chdir("#{@context.repo_path}/environments") do
-          Dir["*.{rb,json,js}"].map { |e| e.gsub(/\.(rb|json|js)/,"") }
+        Dir["#{@context.repo_path}/environments/*.{rb,json,js}"].map do |e|
+          File.basename(e, '.*')
         end
       end
 

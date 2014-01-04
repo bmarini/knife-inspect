@@ -33,13 +33,9 @@ module HealthInspector
       end
 
       def local_items
-        entries = nil
-
-        Dir.chdir("#{@context.repo_path}/data_bags") do
-          entries = Dir["**/*.json"].map { |entry| entry.gsub('.json', '') }
+        Dir["#{@context.repo_path}/data_bags/**/*.json"].map do |e|
+          File.basename(e, '.*')
         end
-
-        return entries
       end
 
       def load_item_from_server(name)

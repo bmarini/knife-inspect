@@ -1,22 +1,15 @@
 module HealthInspector
   class Errors
+    extend Forwardable
+    def_delegators :@errors, :each, :empty?, :<<
+
     include Enumerable
 
     def initialize
       @errors = []
     end
 
-    def add(message)
-      @errors << message
-    end
-
-    def each
-      @errors.each { |e| yield(e) }
-    end
-
-    def empty?
-      @errors.empty?
-    end
+    alias :add :<<
   end
 
   class Pairing

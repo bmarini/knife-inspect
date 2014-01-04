@@ -5,7 +5,7 @@ module HealthInspector
       include ExistenceValidations
 
       def validate_versions
-        if versions_exist? && !versions_match?
+        if versions_exist? && ! versions_match?
           errors.add "chef server has #{server} but local version is #{local}"
         end
       end

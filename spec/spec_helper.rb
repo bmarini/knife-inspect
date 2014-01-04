@@ -49,7 +49,7 @@ shared_examples "a chef model" do
   end
 end
 
-shared_examples "a chef model that can be respresented in json" do
+shared_examples "a chef model that can be represented in json" do
   let(:pairing) { described_class.new(health_inspector_context, :name => "dummy") }
 
   it "should detect if an item is different" do

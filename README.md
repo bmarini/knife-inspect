@@ -1,4 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/bmarini/knife-inspect.png)](http://travis-ci.org/bmarini/knife-inspect)
+[![Code Climate](https://codeclimate.com/github/bmarini/knife-inspect.png)](https://codeclimate.com/github/bmarini/knife-inspect)
 
 ## Summary
 

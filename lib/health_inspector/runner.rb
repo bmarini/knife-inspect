@@ -19,7 +19,8 @@ module HealthInspector
       when 1 # We are inspecting an item
         item = @name_args[0]
         validator = self.class.checklist.new(self)
-        exit validator.validate_item(validator.load_item(item))
+        item = validator.load_item item
+        exit validator.validate_item item
       when 0 # We are inspecting all the items
         exit self.class.checklist.run(self)
       end

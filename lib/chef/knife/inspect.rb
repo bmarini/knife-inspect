@@ -6,9 +6,11 @@ class Chef
 
       CHECKLISTS = %w[Cookbooks DataBags DataBagItems Environments Roles]
 
+      # :nocov:
       deps do
         require "health_inspector"
       end
+      # :nocov:
 
       banner "knife inspect"
 

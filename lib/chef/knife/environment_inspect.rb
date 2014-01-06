@@ -1,25 +1,13 @@
 require 'chef/knife'
+require 'health_inspector'
 
 class Chef
   class Knife
     class EnvironmentInspect < Knife
+      include HealthInspector::Runner
 
-      deps do
-        require 'health_inspector'
-      end
-
-      banner "knife environment inspect [ENVIRONMENT] (options)"
-
-      def run
-        case @name_args.length
-        when 1 # We are inspecting a environment
-          environment_name = @name_args[0]
-          validator = HealthInspector::Checklists::Environments.new(self)
-          exit validator.validate_item( validator.load_item(environment_name) )
-        when 0 # We are inspecting all the environments
-          exit HealthInspector::Checklists::Environments.run(self)
-        end
-      end
+      checklist HealthInspector::Checklists::Environments
+      banner    "knife environment inspect [ENVIRONMENT] (options)"
     end
   end
 end

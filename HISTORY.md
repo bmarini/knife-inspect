@@ -1,3 +1,8 @@
+## 0.7.1 ( 2014-01-06 )
+
+* Small bug fix: `knife data bag inspect` returned the status code only for
+  data bag items, not data bags.
+
 ## 0.7.0 ( 2014-01-03 )
 
 > It's alive! Thanks a lot to Ben Marini for starting this project!

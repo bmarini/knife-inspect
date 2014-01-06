@@ -26,8 +26,8 @@ class Chef
           exit validator.validate_item( validator.load_item(bag_name) )
 
         when 0 # We are inspecting all the data bags
-          HealthInspector::Checklists::DataBags.run(self)
-          exit HealthInspector::Checklists::DataBagItems.run(self)
+          exit HealthInspector::Checklists::DataBags.run(self) &&
+               HealthInspector::Checklists::DataBagItems.run(self)
         end
       end
     end

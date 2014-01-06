@@ -144,3 +144,49 @@ shared_examples "a chef model that can be represented in json" do
     pairing.errors.should be_empty
   end
 end
+
+shared_examples 'a knife inspect runner' do
+  describe '#run' do
+    context 'when passing an item as an argument' do
+      let :inspect_runner do
+        described_class.new ['some_item']
+      end
+
+      let :validator do
+        double
+      end
+
+      let :item do
+        double
+      end
+
+      it 'inspects this item' do
+        expect(checklist).to receive(:new).
+          with(inspect_runner).
+          and_return validator
+        expect(validator).to receive(:load_item).
+          with('some_item').and_return item
+        expect(validator).to receive(:validate_item).
+          with(item).and_return true
+        expect(inspect_runner).to receive(:exit).with true
+
+        inspect_runner.run
+      end
+    end
+
+    context 'when not passing arguments' do
+      let :inspect_runner do
+        described_class.new
+      end
+
+      it 'inspects all the items' do
+        expect(checklist).to receive(:run).
+          with(inspect_runner).
+          and_return true
+        expect(inspect_runner).to receive(:exit).with true
+
+        inspect_runner.run
+      end
+    end
+  end
+end

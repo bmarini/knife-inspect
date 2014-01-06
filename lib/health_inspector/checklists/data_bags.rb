@@ -28,8 +28,7 @@ module HealthInspector
       end
 
       def local_items
-        @local_items ||= Dir["#{@context.repo_path}/data_bags/*"].entries.
-          select { |e| File.directory?(e) }.
+        @local_items ||= Dir["#{@context.repo_path}/data_bags/*/"].
           map { |e| File.basename(e) }
       end
     end

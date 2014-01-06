@@ -9,11 +9,7 @@ module HealthInspector
     end
 
     def cookbook_path
-      Array(config.cookbook_path)
-    end
-
-    def config
-      Chef::Config
+      Array(Chef::Config.cookbook_path)
     end
 
     def rest

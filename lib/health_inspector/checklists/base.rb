@@ -35,7 +35,7 @@ module HealthInspector
       end
 
       def all_item_names
-        ( server_items + local_items ).uniq.sort
+        (server_items + local_items).uniq.sort
       end
 
       def each_item
@@ -109,14 +109,14 @@ module HealthInspector
       end
 
       def print_key(key, depth)
-        ui.msg indent( color('bright yellow',"#{key} : "), depth )
+        ui.msg indent(color('bright yellow',"#{key} : "), depth)
       end
 
       def print_value_diff(value, depth)
-        print indent( color('bright fail',"server value = "), depth + 1 )
+        print indent(color('bright fail',"server value = "), depth + 1)
         print value["server"]
         print "\n"
-        print indent( color('bright fail',"local value  = "), depth + 1 )
+        print indent(color('bright fail',"local value  = "), depth + 1)
         print value["local"]
         print "\n\n"
       end
@@ -131,9 +131,9 @@ module HealthInspector
           instance = chef_class.new
           instance.from_file(ruby_pathname.to_s)
         elsif json_pathname.exist?
-          instance = chef_class.json_create( Yajl::Parser.parse( json_pathname.read ) )
+          instance = chef_class.json_create(Yajl::Parser.parse(json_pathname.read))
         elsif js_pathname.exist?
-          instance = chef_class.json_create( Yajl::Parser.parse( js_pathname.read ) )
+          instance = chef_class.json_create(Yajl::Parser.parse(js_pathname.read))
         end
 
         instance ? instance.to_hash : nil

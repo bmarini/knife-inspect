@@ -3,7 +3,6 @@ require 'chef/knife'
 class Chef
   class Knife
     class DataBagInspect < Knife
-
       deps do
         require 'health_inspector'
       end
@@ -17,13 +16,13 @@ class Chef
           item_name = @name_args[1]
 
           validator = HealthInspector::Checklists::DataBagItems.new(self)
-          exit validator.validate_item( validator.load_item("#{bag_name}/#{item_name}") )
+          exit validator.validate_item(validator.load_item("#{bag_name}/#{item_name}"))
 
         when 1 # We are inspecting a data bag
           bag_name = @name_args[0]
 
           validator = HealthInspector::Checklists::DataBags.new(self)
-          exit validator.validate_item( validator.load_item(bag_name) )
+          exit validator.validate_item(validator.load_item(bag_name))
 
         when 0 # We are inspecting all the data bags
           exit HealthInspector::Checklists::DataBags.run(self) &&

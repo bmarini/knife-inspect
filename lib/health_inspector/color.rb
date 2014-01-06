@@ -25,7 +25,7 @@ module HealthInspector
         'diff removed'  => [:red]# 41
       }
 
-      @context.knife.ui.color( str, *colors[type] )
+      @context.knife.ui.color(str, *colors[type])
     end
   end
 end

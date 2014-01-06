@@ -9,7 +9,7 @@ module HealthInspector
     end
 
     def cookbook_path
-      Array( config.cookbook_path )
+      Array(config.cookbook_path)
     end
 
     def config

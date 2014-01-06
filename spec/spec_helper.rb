@@ -3,6 +3,9 @@ if RUBY_VERSION > '1.9'
   SimpleCov.start do
     add_filter "/spec/"
   end
+
+  require 'coveralls'
+  Coveralls.wear!
 end
 
 require 'rubygems'

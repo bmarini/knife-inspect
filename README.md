@@ -45,6 +45,18 @@ So far it checks if...
 * your environments are in sync
 * your roles are in sync
 
+You can use it with your favorite Continuous Integration tool, it returns 0
+when everything is in sync or 1 if it's not.
+
+## Contributors
+
+(in alphabetical order)
+
+* Adam Sinnett ([@quandrum](https://github.com/quandrum))
+* Eric Saxby ([@sax](https://github.com/sax))
+* Dan Buch ([@meatballhat](@https://github.com/meatballhat))
+* Kirt Fitzpatrick ([@kirtfitzpatrick](https://github.com/kirtfitzpatrick))
+
 ## Contributing
 
 1. Fork it

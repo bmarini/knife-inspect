@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/knife-inspect.png)](http://badge.fury.io/rb/knife-inspect)
 [![Build Status](https://secure.travis-ci.org/bmarini/knife-inspect.png)](http://travis-ci.org/bmarini/knife-inspect)
 [![Code Climate](https://codeclimate.com/github/bmarini/knife-inspect.png)](https://codeclimate.com/github/bmarini/knife-inspect)
 [![Coverage Status](https://coveralls.io/repos/bmarini/knife-inspect/badge.png)](https://coveralls.io/r/bmarini/knife-inspect)

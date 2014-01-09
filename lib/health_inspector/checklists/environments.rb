@@ -16,12 +16,6 @@ module HealthInspector
     class Environments < Base
       title "environments"
 
-      def each_item
-        all_item_names.each do |name|
-          yield load_item(name)
-        end
-      end
-
       def load_item(name)
         Environment.new(@context,
           :name   => name,

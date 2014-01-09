@@ -10,12 +10,6 @@ module HealthInspector
     class DataBagItems < Base
       title "data bag items"
 
-      def each_item
-        all_item_names.each do |name|
-          yield load_item(name)
-        end
-      end
-
       def load_item(name)
         DataBagItem.new(@context,
           :name   => name,

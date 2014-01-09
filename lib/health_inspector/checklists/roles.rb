@@ -11,12 +11,6 @@ module HealthInspector
     class Roles < Base
       title "roles"
 
-      def each_item
-        all_item_names.each do |name|
-          yield load_item(name)
-        end
-      end
-
       def load_item(name)
         Role.new(@context,
           :name   => name,

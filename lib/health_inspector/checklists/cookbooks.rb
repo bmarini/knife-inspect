@@ -91,30 +91,22 @@ module HealthInspector
 
       title "cookbooks"
 
-      def each_item
-        all_cookbook_names = ( server_cookbooks.keys + local_cookbooks.keys ).uniq.sort
-
-        all_cookbook_names.each do |name|
-          yield load_item(name)
-        end
-      end
-
       def load_item(name)
         Cookbook.new(@context,
           :name   => name,
-          :server => server_cookbooks[name],
-          :local  => local_cookbooks[name]
+          :server => server_items[name],
+          :local  => local_items[name]
         )
       end
 
-      def server_cookbooks
+      def server_items
         @context.rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
           hsh[name] = Chef::Version.new(version["versions"].first["version"])
           hsh
         end
       end
 
-      def local_cookbooks
+      def local_items
         @context.cookbook_path.
           map { |path| Dir["#{path}/*"] }.
           flatten.
@@ -127,6 +119,10 @@ module HealthInspector
             hsh[name] = Chef::Version.new(version)
             hsh
           end
+      end
+
+      def all_item_names
+        (server_items.keys + local_items.keys).uniq.sort
       end
 
     end

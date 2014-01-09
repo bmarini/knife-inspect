@@ -26,16 +26,22 @@ module HealthInspector
         @context.knife.ui
       end
 
+      def server_items
+        raise NotImplementedError, "You must implement this method in a subclass"
+      end
+
+      def local_items
+        raise NotImplementedError, "You must implement this method in a subclass"
+      end
+
       def all_item_names
         ( server_items + local_items ).uniq.sort
       end
 
-      # Subclasses should collect all items from the server and the local repo,
-      # and for each item pair, yield an object that contains a reference to
-      # the server item, and the local repo item. A reference can be nil if it does
-      # not exist in one of the locations.
       def each_item
-        raise NotImplementedError, "You must implement this method in a subclass"
+        all_item_names.each do |name|
+          yield load_item(name)
+        end
       end
 
       def run

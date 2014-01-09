@@ -21,9 +21,11 @@ module HealthInspector
         @server_items ||= Chef::DataBag.list.keys
       end
 
+      # JSON files are data bag items, their parent folder is the data bag
       def local_items
-        @local_items ||= Dir["#{@context.repo_path}/data_bags/*/"].
-          map { |e| File.basename(e) }
+        @local_items ||= Dir["#{@context.repo_path}/data_bags/**/*.json"].map do |e|
+          e.split('/')[-2].gsub('.json', '')
+        end
       end
     end
 

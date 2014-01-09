@@ -24,7 +24,7 @@ module HealthInspector
       end
 
       def local_items
-        Dir["#{@context.repo_path}/roles/*.{rb,json,js}"].map do |e|
+        Dir["#{@context.repo_path}/roles/**/*.{rb,json,js}"].map do |e|
           File.basename(e, '.*')
         end
       end

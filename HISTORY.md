@@ -1,3 +1,10 @@
+## 0.8.0 ( 2014-01-10 )
+
+* New feature: Support data bags, data bag items, environments and roles inside
+  folders.
+* Add initial specs for the checklists.
+* General cleanup: got rid of some duplicate code and dead code.
+
 ## 0.7.1 ( 2014-01-06 )
 
 * Small bug fix: `knife data bag inspect` returned the status code only for

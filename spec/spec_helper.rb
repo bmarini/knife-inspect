@@ -15,8 +15,15 @@ require 'bundler/setup'
 require 'health_inspector'
 
 module HealthInspector::SpecHelpers
+  def repo_path
+    @repo_path ||= File.expand_path("../chef-repo", __FILE__)
+  end
+
   def health_inspector_context
-    @health_inspector_context ||= HealthInspector::Context.new(nil)
+    @health_inspector_context ||= double(
+      :repo_path => repo_path,
+      :cookbook_path => ["#{repo_path}/cookbooks"]
+    )
   end
 end
 

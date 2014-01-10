@@ -122,18 +122,18 @@ module HealthInspector
       end
 
       def load_ruby_or_json_from_local(chef_class, folder, name)
-        path_template = "#{@context.repo_path}/#{folder}/#{name}.%s"
-        ruby_pathname = Pathname.new(path_template % "rb")
-        json_pathname = Pathname.new(path_template % "json")
-        js_pathname   = Pathname.new(path_template % "js")
+        path_template = "#{@context.repo_path}/#{folder}/**/#{name}.%s"
+        ruby_pathname = Pathname.glob(path_template % "rb")
+        json_pathname = Pathname.glob(path_template % "json")
+        js_pathname   = Pathname.glob(path_template % "js")
 
-        if ruby_pathname.exist?
+        if ! ruby_pathname.empty?
           instance = chef_class.new
-          instance.from_file(ruby_pathname.to_s)
-        elsif json_pathname.exist?
-          instance = chef_class.json_create(Yajl::Parser.parse(json_pathname.read))
-        elsif js_pathname.exist?
-          instance = chef_class.json_create(Yajl::Parser.parse(js_pathname.read))
+          instance.from_file(ruby_pathname.first.to_s)
+        elsif ! json_pathname.empty?
+          instance = chef_class.json_create(Yajl::Parser.parse(json_pathname.first.read))
+        elsif ! js_pathname.empty?
+          instance = chef_class.json_create(Yajl::Parser.parse(js_pathname.first.read))
         end
 
         instance ? instance.to_hash : nil

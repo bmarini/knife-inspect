@@ -26,14 +26,11 @@ module HealthInspector
         end
       end
 
+      # JSON files are data bag items, their parent folder is the data bag
       def local_items
-        entries = nil
-
-        Dir.chdir("#{@context.repo_path}/data_bags") do
-          entries = Dir["**/*.json"].map { |entry| entry.gsub('.json', '') }
+        Dir["#{@context.repo_path}/data_bags/**/*.json"].map do |e|
+          e.split('/')[-2..-1].join('/').gsub('.json', '')
         end
-
-        entries
       end
 
       def load_item_from_server(name)
@@ -43,8 +40,16 @@ module HealthInspector
         nil
       end
 
+      # We support data bags that are inside a folder or git submodule, for
+      # example:
+      #
+      # data_bags/corp/apps/some_app.json is in the repo, but apps/some_app on
+      # the server
       def load_item_from_local(name)
-        Yajl::Parser.parse(File.read("#{@context.repo_path}/data_bags/#{name}.json"))
+        local_data_bag_item = Dir["#{@context.repo_path}/data_bags/**/#{name}.json"].first
+        return nil if local_data_bag_item.nil?
+
+        Yajl::Parser.parse(File.read(local_data_bag_item))
       rescue IOError, Errno::ENOENT
         nil
       end

@@ -1,22 +1,15 @@
 module HealthInspector
   class Errors
+    extend Forwardable
+    def_delegators :@errors, :each, :empty?, :<<
+
     include Enumerable
 
     def initialize
       @errors = []
     end
 
-    def add(message)
-      @errors << message
-    end
-
-    def each
-      @errors.each { |e| yield(e) }
-    end
-
-    def empty?
-      @errors.empty?
-    end
+    alias :add :<<
   end
 
   class Pairing
@@ -49,9 +42,9 @@ module HealthInspector
     end
 
     def stringify_item(item)
-      if item.kind_of?(Hash)
+      if item.is_a?(Hash)
         stringify_hash_keys(item)
-      elsif item.kind_of?(Array)
+      elsif item.is_a?(Array)
         item.map {|array_item| stringify_item(array_item) }
       else # must be a string
         item
@@ -60,14 +53,15 @@ module HealthInspector
 
     def recursive_diff(original, other)
       (original.keys + other.keys).uniq.inject({}) do |memo, key|
-        unless original[key] == other[key]
-          if original[key].kind_of?(Hash) && other[key].kind_of?(Hash)
-            diff = recursive_diff(original[key], other[key])
-            memo[key] = diff unless diff.empty?
-          else
-            memo[key] = {"server" => original[key], "local" => other[key]}
-          end
+        return memo if original[key] == other[key]
+
+        if original[key].is_a?(Hash) && other[key].is_a?(Hash)
+          diff = recursive_diff(original[key], other[key])
+          memo[key] = diff unless diff.empty?
+        else
+          memo[key] = {"server" => original[key], "local" => other[key]}
         end
+
         memo
       end
     end
@@ -97,10 +91,10 @@ module HealthInspector
 
   module JsonValidations
     def validate_items_are_the_same
-      if server && local
-        differences = hash_diff(server, local)
-        errors.add differences unless differences.empty?
-      end
+      return if server.nil? || local.nil?
+
+      differences = hash_diff(server, local)
+      errors.add differences unless differences.empty?
     end
   end
 end

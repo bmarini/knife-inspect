@@ -30,4 +30,23 @@ describe HealthInspector::Checklists::DataBags do
       ]
     end
   end
+
+  describe '#load_item(name)' do
+    let :name do
+      'data bag'
+    end
+
+    let :item do
+      checklist.load_item name
+    end
+
+    it 'instanciates a DataBag pairing for that item' do
+      expect(checklist).to receive(:server_items).and_return ['data bag']
+      expect(checklist).to receive(:local_items).and_return ['data bag']
+      expect(item).to be_a(HealthInspector::Checklists::DataBag)
+      expect(item.name).to eq(name)
+      expect(item.server).to be_true
+      expect(item.local).to be_true
+    end
+  end
 end

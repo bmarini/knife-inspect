@@ -11,56 +11,54 @@ module HealthInspector
       end
 
       def validate_uncommited_changes
-        if git_repo?
-          result = `cd #{cookbook_path} && git status -s`
+        return unless git_repo?
 
-          unless result.empty?
-            errors.add "Uncommitted changes:\n#{result.chomp}"
-          end
+        result = `cd #{cookbook_path} && git status -s`
+
+        unless result.empty?
+          errors.add "Uncommitted changes:\n#{result.chomp}"
         end
       end
 
       def validate_commits_not_pushed_to_remote
-        if git_repo?
-          result = `cd #{cookbook_path} && git status`
+        return unless git_repo?
 
-          if result =~ /Your branch is ahead of (.+)/
-            errors.add "ahead of #{$1}"
-          end
+        result = `cd #{cookbook_path} && git status`
+
+        if result =~ /Your branch is ahead of (.+)/
+          errors.add "ahead of #{$1}"
         end
       end
 
       # TODO: Check files that exist locally but not in manifest on server
       def validate_changes_on_the_server_not_in_the_repo
-        if versions_exist? && versions_match?
+        return unless versions_exist? && versions_match?
 
-          begin
-            cookbook = context.rest.get_rest("/cookbooks/#{name}/#{local}")
-            messages = []
+        begin
+          cookbook = context.rest.get_rest("/cookbooks/#{name}/#{local}")
+          messages = []
 
-            Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
-              cookbook.manifest[segment].each do |manifest_record|
-                path = cookbook_path.join("#{manifest_record["path"]}")
+          Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+            cookbook.manifest[segment].each do |manifest_record|
+              path = cookbook_path.join("#{manifest_record["path"]}")
 
-                if path.exist?
-                  checksum = checksum_cookbook_file(path)
-                  messages << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
-                else
-                  messages << "#{manifest_record['path']} does not exist in the repo"
-                end
+              if path.exist?
+                checksum = checksum_cookbook_file(path)
+                messages << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
+              else
+                messages << "#{manifest_record['path']} does not exist in the repo"
               end
             end
-
-            unless messages.empty?
-              message = "has a checksum mismatch between server and repo in\n"
-              message << messages.map { |f| "    #{f}" }.join("\n")
-              errors.add message
-            end
-
-          rescue Net::HTTPServerException => e
-            errors.add "Could not find cookbook #{name} on the server"
           end
 
+          unless messages.empty?
+            message = "has a checksum mismatch between server and repo in\n"
+            message << messages.map { |f| "    #{f}" }.join("\n")
+            errors.add message
+          end
+
+        rescue Net::HTTPServerException
+          errors.add "Could not find cookbook #{name} on the server"
         end
       end
 

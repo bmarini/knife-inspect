@@ -34,10 +34,12 @@ module HealthInspector
       end
 
       def load_item_from_server(name)
-        bag_name, item_name = name.split("/")
-        Chef::DataBagItem.load(bag_name, item_name).raw_data
-      rescue
-        nil
+        begin
+          bag_name, item_name = name.split("/")
+          Chef::DataBagItem.load(bag_name, item_name).raw_data
+        rescue Net::HTTPServerException
+          nil
+        end
       end
 
       # We support data bags that are inside a folder or git submodule, for
@@ -50,7 +52,7 @@ module HealthInspector
         return nil if local_data_bag_item.nil?
 
         Yajl::Parser.parse(File.read(local_data_bag_item))
-      rescue IOError, Errno::ENOENT
+      rescue Yajl::ParseError
         nil
       end
     end

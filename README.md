@@ -48,6 +48,15 @@ So far it checks if...
 You can use it with your favorite Continuous Integration tool, it returns 0
 when everything is in sync or 1 if it's not.
 
+## Frequently Asked Questions
+
+### How is it different [from knife diff](http://docs.opscode.com/knife_diff.html)?
+
+* It returns the proper return code, so you can [use it with a Continuous Integration tool](https://blog.5apps.com/2014/01/07/using-travis-to-make-sure-your-chef-repo-and-server-are-in-sync.html)
+* `knife diff` seems to expect local roles to be json files, knife-inspect supports both JSON and Ruby.
+* It's my personal opinion, but I think the output from knife-inspect is more readable. Also I don't understand some of the errors I'm getting with `knife diff` (`Only in .: clients` for example)
+* I actually didn't know there was a built-in `knife diff` command.
+
 ## Contributors
 
 (in alphabetical order)

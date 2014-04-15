@@ -7,7 +7,7 @@ class Chef
       include HealthInspector::Runner
 
       checklist HealthInspector::Checklists::Roles
-      banner    "knife role inspect [ROLE] (options)"
+      banner 'knife role inspect [ROLE] (options)'
     end
   end
 end

@@ -9,14 +9,14 @@ module HealthInspector
       @errors = []
     end
 
-    alias :add :<<
+    alias_method :add, :<<
   end
 
   class Pairing
     attr_accessor :name, :local, :server
     attr_reader :context, :errors
 
-    def initialize(context, opts={})
+    def initialize(context, opts = {})
       @context     = context
       @name        = opts[:name]
       @local       = opts[:local]
@@ -27,7 +27,7 @@ module HealthInspector
     end
 
     def validate
-      self.methods.grep(/^validate_/).each { |meth| send(meth) }
+      methods.grep(/^validate_/).each { |meth| send(meth) }
     end
 
     def hash_diff(original, other)
@@ -35,7 +35,7 @@ module HealthInspector
     end
 
     def stringify_hash_keys(original)
-      original.keys.inject({}) do |original_strkey, key|
+      original.keys.reduce({}) do |original_strkey, key|
         original_strkey[key.to_s] = stringify_item(original[key])
         original_strkey
       end
@@ -45,21 +45,21 @@ module HealthInspector
       if item.is_a?(Hash)
         stringify_hash_keys(item)
       elsif item.is_a?(Array)
-        item.map {|array_item| stringify_item(array_item) }
+        item.map { |array_item| stringify_item(array_item) }
       else # must be a string
         item
       end
     end
 
     def recursive_diff(original, other)
-      (original.keys + other.keys).uniq.inject({}) do |memo, key|
+      (original.keys + other.keys).uniq.reduce({}) do |memo, key|
         return memo if original[key] == other[key]
 
         if original[key].is_a?(Hash) && other[key].is_a?(Hash)
           diff = recursive_diff(original[key], other[key])
           memo[key] = diff unless diff.empty?
         else
-          memo[key] = {"server" => original[key], "local" => other[key]}
+          memo[key] = { 'server' => original[key], 'local' => other[key] }
         end
 
         memo
@@ -71,7 +71,7 @@ module HealthInspector
   module ExistenceValidations
     def validate_existence
       if local.nil? && server.nil?
-        errors.add "does not exist locally or on server"
+        errors.add 'does not exist locally or on server'
         return
       end
 
@@ -80,12 +80,13 @@ module HealthInspector
     end
 
     private
+
     def validate_local_copy_exists
-      errors.add "exists on server but not locally" if local.nil?
+      errors.add 'exists on server but not locally' if local.nil?
     end
 
     def validate_server_copy_exists
-      errors.add "exists locally but not on server" if server.nil?
+      errors.add 'exists locally but not on server' if server.nil?
     end
   end
 

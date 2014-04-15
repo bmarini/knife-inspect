@@ -1,11 +1,10 @@
 module HealthInspector
   module Checklists
-
     class Cookbook < Pairing
       include ExistenceValidations
 
       def validate_versions
-        if versions_exist? && ! versions_match?
+        if versions_exist? && !versions_match?
           errors.add "chef server has #{server} but local version is #{local}"
         end
       end
@@ -15,9 +14,7 @@ module HealthInspector
 
         result = `cd #{cookbook_path} && git status -s`
 
-        unless result.empty?
-          errors.add "Uncommitted changes:\n#{result.chomp}"
-        end
+        errors.add "Uncommitted changes:\n#{result.chomp}" unless result.empty?
       end
 
       def validate_commits_not_pushed_to_remote
@@ -26,7 +23,7 @@ module HealthInspector
         result = `cd #{cookbook_path} && git status`
 
         if result =~ /Your branch is ahead of (.+)/
-          errors.add "ahead of #{$1}"
+          errors.add "ahead of #{Regexp.last_match[1]}"
         end
       end
 
@@ -40,7 +37,7 @@ module HealthInspector
 
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
             cookbook.manifest[segment].each do |manifest_record|
-              path = cookbook_path.join("#{manifest_record["path"]}")
+              path = cookbook_path.join("#{manifest_record['path']}")
 
               if path.exist?
                 checksum = checksum_cookbook_file(path)
@@ -82,47 +79,51 @@ module HealthInspector
       def checksum_cookbook_file(filepath)
         Chef::CookbookVersion.checksum_cookbook_file(filepath)
       end
-
     end
 
     class Cookbooks < Base
-
-      title "cookbooks"
+      title 'cookbooks'
 
       def load_item(name)
         Cookbook.new(@context,
-          :name   => name,
-          :server => server_items[name],
-          :local  => local_items[name]
-        )
+                     :name   => name,
+                     :server => server_items[name],
+                     :local  => local_items[name])
       end
 
       def server_items
-        @context.rest.get_rest("/cookbooks").inject({}) do |hsh, (name,version)|
-          hsh[name] = Chef::Version.new(version["versions"].first["version"])
+        @context.rest.get_rest('/cookbooks').reduce({}) do |hsh, (name, version)|
+          hsh[name] = Chef::Version.new(version['versions'].first['version'])
+
           hsh
         end
       end
 
       def local_items
-        @context.cookbook_path.
-          map { |path| Dir["#{path}/*"] }.
-          flatten.
-          select { |path| File.exists?("#{path}/metadata.rb") }.
-          inject({}) do |hsh, path|
+        cookbooks = @context.cookbook_path
+          .flat_map { |path| Dir["#{path}/*"] }
+          .select { |path| File.exist?("#{path}/metadata.rb") }
 
-            name    = File.basename(path)
-            version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+        cookbooks.reduce({}) do |hsh, path|
+          hsh[name_from(path)] = Chef::Version.new(version_from(path))
 
-            hsh[name] = Chef::Version.new(version)
-            hsh
-          end
+          hsh
+        end
       end
 
       def all_item_names
         (server_items.keys + local_items.keys).uniq.sort
       end
 
+      private
+
+      def name_from(path)
+        File.basename(path)
+      end
+
+      def version_from(path)
+        (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+      end
     end
   end
 end

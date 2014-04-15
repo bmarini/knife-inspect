@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require "pathname"
+require 'pathname'
 
 module HealthInspector
   module Checklists
@@ -9,7 +9,7 @@ module HealthInspector
       class << self
         attr_reader :title
 
-        def title(val=nil)
+        def title(val = nil)
           val.nil? ? @title : @title = val
         end
       end
@@ -27,11 +27,11 @@ module HealthInspector
       end
 
       def server_items
-        raise NotImplementedError, "You must implement this method in a subclass"
+        fail NotImplementedError, 'You must implement this method in a subclass'
       end
 
       def local_items
-        raise NotImplementedError, "You must implement this method in a subclass"
+        fail NotImplementedError, 'You must implement this method in a subclass'
       end
 
       def all_item_names
@@ -53,7 +53,7 @@ module HealthInspector
           results << validate_item(item)
         end
 
-        return ! results.include?(false)
+        !results.include?(false)
       end
 
       def validate_item(item)
@@ -72,13 +72,13 @@ module HealthInspector
       end
 
       def banner(message)
-        ui.msg ""
+        ui.msg ''
         ui.msg message
-        ui.msg "-" * 80
+        ui.msg '-' * 80
       end
 
       def print_success(subject)
-        ui.msg color('bright pass', "✓") + " #{subject}"
+        ui.msg "#{color('bright pass', '✓')} #{subject}"
       end
 
       def print_failures(subject, failures)
@@ -86,7 +86,10 @@ module HealthInspector
 
         failures.each do |message|
           if message.is_a? Hash
-            puts color('bright yellow',"  has the following values mismatched on the server and repo\n")
+            puts color(
+              'bright yellow',
+              "  has the following values mismatched on the server and repo\n"
+            )
             print_failures_from_hash(message)
           else
             puts color('bright yellow', "  #{message}")
@@ -94,13 +97,13 @@ module HealthInspector
         end
       end
 
-      def print_failures_from_hash(message, depth=2)
+      def print_failures_from_hash(message, depth = 2)
         message.keys.each do |key|
-          print_key(key,depth)
+          print_key(key, depth)
 
-          if message[key].include? "server"
-            print_value_diff(message[key],depth)
-            message[key].delete_if { |k,v| k == "server" || "local" }
+          if message[key].include? 'server'
+            print_value_diff(message[key], depth)
+            message[key].delete_if { |k, _v| k == 'server' || 'local' }
             print_failures_from_hash(message[key], depth + 1) unless message[key].empty?
           else
             print_failures_from_hash(message[key], depth + 1)
@@ -109,30 +112,30 @@ module HealthInspector
       end
 
       def print_key(key, depth)
-        ui.msg indent(color('bright yellow',"#{key} : "), depth)
+        ui.msg indent(color('bright yellow', "#{key} : "), depth)
       end
 
       def print_value_diff(value, depth)
-        print indent(color('bright fail',"server value = "), depth + 1)
-        print value["server"]
+        print indent(color('bright fail', 'server value = '), depth + 1)
+        print value['server']
         print "\n"
-        print indent(color('bright fail',"local value  = "), depth + 1)
-        print value["local"]
+        print indent(color('bright fail', 'local value  = '), depth + 1)
+        print value['local']
         print "\n\n"
       end
 
       def load_ruby_or_json_from_local(chef_class, folder, name)
         path_template = "#{@context.repo_path}/#{folder}/**/#{name}.%s"
-        ruby_pathname = Pathname.glob(path_template % "rb")
-        json_pathname = Pathname.glob(path_template % "json")
-        js_pathname   = Pathname.glob(path_template % "js")
+        ruby_pathname = Pathname.glob(path_template % 'rb')
+        json_pathname = Pathname.glob(path_template % 'json')
+        js_pathname   = Pathname.glob(path_template % 'js')
 
-        if ! ruby_pathname.empty?
+        if !ruby_pathname.empty?
           instance = chef_class.new
           instance.from_file(ruby_pathname.first.to_s)
-        elsif ! json_pathname.empty?
+        elsif !json_pathname.empty?
           instance = chef_class.json_create(Yajl::Parser.parse(json_pathname.first.read))
-        elsif ! js_pathname.empty?
+        elsif !js_pathname.empty?
           instance = chef_class.json_create(Yajl::Parser.parse(js_pathname.first.read))
         end
 
@@ -144,7 +147,6 @@ module HealthInspector
       def indent(string, depth)
         (' ' * 2 * depth) + string
       end
-
     end
   end
 end

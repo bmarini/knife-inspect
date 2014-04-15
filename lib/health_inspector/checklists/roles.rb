@@ -1,4 +1,4 @@
-require "chef/role"
+require 'chef/role'
 require 'yajl'
 
 module HealthInspector
@@ -9,14 +9,13 @@ module HealthInspector
     end
 
     class Roles < Base
-      title "roles"
+      title 'roles'
 
       def load_item(name)
         Role.new(@context,
-          :name   => name,
-          :server => load_item_from_server(name),
-          :local  => load_item_from_local(name)
-        )
+                 :name   => name,
+                 :server => load_item_from_server(name),
+                 :local  => load_item_from_local(name))
       end
 
       def server_items
@@ -37,9 +36,8 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        load_ruby_or_json_from_local(Chef::Role, "roles", name)
+        load_ruby_or_json_from_local(Chef::Role, 'roles', name)
       end
     end
-
   end
 end

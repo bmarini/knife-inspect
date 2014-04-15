@@ -1,4 +1,4 @@
-require "chef/environment"
+require 'chef/environment'
 
 module HealthInspector
   module Checklists
@@ -7,6 +7,7 @@ module HealthInspector
       include JsonValidations
 
       private
+
       # Override to ignore _default environment if it is missing locally
       def validate_local_copy_exists
         super unless name == '_default'
@@ -14,14 +15,13 @@ module HealthInspector
     end
 
     class Environments < Base
-      title "environments"
+      title 'environments'
 
       def load_item(name)
         Environment.new(@context,
-          :name   => name,
-          :server => load_item_from_server(name),
-          :local  => load_item_from_local(name)
-        )
+                        :name   => name,
+                        :server => load_item_from_server(name),
+                        :local  => load_item_from_local(name))
       end
 
       def server_items
@@ -41,7 +41,7 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        load_ruby_or_json_from_local(Chef::Environment, "environments", name)
+        load_ruby_or_json_from_local(Chef::Environment, 'environments', name)
       end
     end
   end

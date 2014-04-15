@@ -7,7 +7,7 @@ class Chef
       include HealthInspector::Runner
 
       checklist HealthInspector::Checklists::Environments
-      banner    "knife environment inspect [ENVIRONMENT] (options)"
+      banner 'knife environment inspect [ENVIRONMENT] (options)'
     end
   end
 end

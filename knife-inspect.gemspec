@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "health_inspector/version"
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
+require 'health_inspector/version'
 
 # Allow to pass an arbitrary chef version. Useful for testing for example.
 chef_version = if ENV.key?('CHEF_VERSION')
@@ -21,12 +21,13 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
 
   s.add_development_dependency 'rake',      '~> 10.1'
   s.add_development_dependency 'rspec',     '~> 2.14'
   s.add_development_dependency 'simplecov', '~> 0.8'
   s.add_development_dependency 'coveralls', '~> 0.7'
+  s.add_runtime_dependency     'rubocop'
 
   s.add_runtime_dependency 'chef',      chef_version
   s.add_runtime_dependency 'yajl-ruby', '~> 1.1'

@@ -1,4 +1,4 @@
-require "chef/data_bag"
+require 'chef/data_bag'
 
 module HealthInspector
   module Checklists
@@ -7,14 +7,13 @@ module HealthInspector
     end
 
     class DataBags < Base
-      title "data bags"
+      title 'data bags'
 
       def load_item(name)
         DataBag.new(@context,
-          :name   => name,
-          :server => server_items.include?(name),
-          :local  => local_items.include?(name)
-        )
+                    :name   => name,
+                    :server => server_items.include?(name),
+                    :local  => local_items.include?(name))
       end
 
       def server_items
@@ -28,6 +27,5 @@ module HealthInspector
         end
       end
     end
-
   end
 end

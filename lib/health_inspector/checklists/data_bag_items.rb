@@ -1,4 +1,4 @@
-require "chef/data_bag"
+require 'chef/data_bag'
 
 module HealthInspector
   module Checklists
@@ -8,22 +8,17 @@ module HealthInspector
     end
 
     class DataBagItems < Base
-      title "data bag items"
+      title 'data bag items'
 
       def load_item(name)
         DataBagItem.new(@context,
-          :name   => name,
-          :server => load_item_from_server(name),
-          :local  => load_item_from_local(name)
-        )
+                        :name   => name,
+                        :server => load_item_from_server(name),
+                        :local  => load_item_from_local(name))
       end
 
       def server_items
-        @server_items ||= Chef::DataBag.list.keys.map do |bag_name|
-          [ bag_name, Chef::DataBag.load(bag_name) ]
-        end.inject([]) do |arr, (bag_name, data_bag)|
-          arr += data_bag.keys.map { |item_name| "#{bag_name}/#{item_name}"}
-        end
+        @server_items ||= compute_server_items
       end
 
       # JSON files are data bag items, their parent folder is the data bag
@@ -34,12 +29,10 @@ module HealthInspector
       end
 
       def load_item_from_server(name)
-        begin
-          bag_name, item_name = name.split("/")
-          Chef::DataBagItem.load(bag_name, item_name).raw_data
-        rescue Net::HTTPServerException
-          nil
-        end
+        bag_name, item_name = name.split('/')
+        Chef::DataBagItem.load(bag_name, item_name).raw_data
+      rescue Net::HTTPServerException
+        nil
       end
 
       # We support data bags that are inside a folder or git submodule, for
@@ -55,7 +48,18 @@ module HealthInspector
       rescue Yajl::ParseError
         nil
       end
-    end
 
+      private
+
+      def compute_server_items
+        data_bags = Chef::DataBag.list.keys.map do |bag_name|
+          [bag_name, Chef::DataBag.load(bag_name)]
+        end
+
+        data_bags.flat_map do |bag_name, data_bag|
+          data_bag.keys.map { |item_name| "#{bag_name}/#{item_name}" }
+        end
+      end
+    end
   end
 end

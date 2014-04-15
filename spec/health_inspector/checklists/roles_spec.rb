@@ -6,28 +6,26 @@ describe HealthInspector::Checklists::Roles do
   end
 
   before do
-    expect(HealthInspector::Context).to receive(:new).with(nil).
-      and_return health_inspector_context
+    expect(HealthInspector::Context).to receive(:new).with(nil)
+      .and_return health_inspector_context
   end
 
   describe '#server_items' do
-    it 'returns a list of roles from the chef server' do
-      expect(Chef::Role).to receive(:list).and_return({
-        'role_one'         => 'url',
+    let :roles do
+      { 'role_one'         => 'url',
         'role_two'         => 'url',
-        'role_from_subdir' => 'url'
-      })
-      expect(checklist.server_items.sort).to eq [
-        'role_from_subdir', 'role_one', 'role_two'
-      ]
+        'role_from_subdir' => 'url' }
+    end
+
+    it 'returns a list of roles from the chef server' do
+      expect(Chef::Role).to receive(:list).and_return roles
+      expect(checklist.server_items.sort).to eq %w(role_from_subdir role_one role_two)
     end
   end
 
   describe '#local_items' do
     it 'returns a list of roles from the chef repo' do
-      expect(checklist.local_items.sort).to eq [
-        'role_from_subdir', 'role_one', 'role_two'
-      ]
+      expect(checklist.local_items.sort).to eq %w(role_from_subdir role_one role_two)
     end
   end
 end

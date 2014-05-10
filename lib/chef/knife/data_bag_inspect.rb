@@ -9,7 +9,7 @@ class Chef
       end
       # :nocov:
 
-      banner "knife data bag inspect [BAG] [ITEM] (options)"
+      banner 'knife data bag inspect [BAG] [ITEM] (options)'
 
       def run
         case @name_args.length

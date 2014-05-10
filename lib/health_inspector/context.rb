@@ -1,4 +1,4 @@
-require "chef/config"
+require 'chef/config'
 
 module HealthInspector
   class Context

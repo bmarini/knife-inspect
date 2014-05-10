@@ -1,4 +1,4 @@
-require "chef/environment"
+require 'chef/environment'
 
 module HealthInspector
   module Checklists
@@ -14,13 +14,13 @@ module HealthInspector
     end
 
     class Environments < Base
-      title "environments"
+      title 'environments'
 
       def load_item(name)
         Environment.new(@context,
-          :name   => name,
-          :server => load_item_from_server(name),
-          :local  => load_item_from_local(name)
+                        name: name,
+                        server: load_item_from_server(name),
+                        local: load_item_from_local(name)
         )
       end
 
@@ -41,7 +41,7 @@ module HealthInspector
       end
 
       def load_item_from_local(name)
-        load_ruby_or_json_from_local(Chef::Environment, "environments", name)
+        load_ruby_or_json_from_local(Chef::Environment, 'environments', name)
       end
     end
   end

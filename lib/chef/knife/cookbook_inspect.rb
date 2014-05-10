@@ -7,7 +7,7 @@ class Chef
       include HealthInspector::Runner
 
       checklist HealthInspector::Checklists::Cookbooks
-      banner    "knife cookbook inspect [COOKBOOK] (options)"
+      banner 'knife cookbook inspect [COOKBOOK] (options)'
     end
   end
 end

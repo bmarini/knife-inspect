@@ -14,9 +14,7 @@ module HealthInspector
 
         result = `cd #{cookbook_path} && git status -s`
 
-        unless result.empty?
-          errors.add "Uncommitted changes:\n#{result.chomp}"
-        end
+        errors.add "Uncommitted changes:\n#{result.chomp}" unless result.empty?
       end
 
       def validate_commits_not_pushed_to_remote
@@ -90,8 +88,7 @@ module HealthInspector
         Cookbook.new(@context,
                      name: name,
                      server: server_items[name],
-                     local: local_items[name]
-        )
+                     local: local_items[name])
       end
 
       def server_items
@@ -102,11 +99,11 @@ module HealthInspector
       end
 
       def local_items
-        @context.cookbook_path.
-          map { |path| Dir["#{path}/*"] }.
-          flatten.
-          select { |path| File.exist?("#{path}/metadata.rb") }.
-          reduce({}) do |hsh, path|
+        @context.cookbook_path
+          .map { |path| Dir["#{path}/*"] }
+          .flatten
+          .select { |path| File.exist?("#{path}/metadata.rb") }
+          .reduce({}) do |hsh, path|
 
             name    = File.basename(path)
             version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]

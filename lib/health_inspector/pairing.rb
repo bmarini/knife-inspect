@@ -80,6 +80,7 @@ module HealthInspector
     end
 
     private
+
     def validate_local_copy_exists
       errors.add 'exists on server but not locally' if local.nil?
     end

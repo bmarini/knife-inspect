@@ -22,7 +22,7 @@ module HealthInspector
         @server_items ||= Chef::DataBag.list.keys.map do |bag_name|
           [bag_name, Chef::DataBag.load(bag_name)]
         end.reduce([]) do |arr, (bag_name, data_bag)|
-          arr += data_bag.keys.map { |item_name| "#{bag_name}/#{item_name}" }
+          arr + data_bag.keys.map { |item_name| "#{bag_name}/#{item_name}" }
         end
       end
 

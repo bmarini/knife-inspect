@@ -7,6 +7,7 @@ module HealthInspector
       include JsonValidations
 
       private
+
       # Override to ignore _default environment if it is missing locally
       def validate_local_copy_exists
         super unless name == '_default'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'chef/knife/inspect'
 
-describe Chef::Knife::Inspect do
+RSpec.describe Chef::Knife::Inspect do
   let :knife_inspect do
     described_class.new
   end

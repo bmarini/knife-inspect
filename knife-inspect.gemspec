@@ -29,5 +29,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls', '~> 0.7'
 
   s.add_runtime_dependency 'chef',      chef_version
-  s.add_runtime_dependency 'yajl-ruby', '~> 1.1'
+  s.add_runtime_dependency 'yajl-ruby', '~> 1.2'
 end

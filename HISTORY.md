@@ -1,3 +1,7 @@
+## 0.9.0 ( 2014-08-02 )
+
+* Bug fix: update yajl-ruby dependency to 1.2, 1.1 segfaulted in some cases
+
 ## 0.8.0 ( 2014-01-10 )
 
 * New feature: Support data bags, data bag items, environments and roles inside

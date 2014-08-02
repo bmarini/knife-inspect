@@ -65,6 +65,7 @@ when everything is in sync or 1 if it's not.
 * Eric Saxby ([@sax](https://github.com/sax))
 * Dan Buch ([@meatballhat](@https://github.com/meatballhat))
 * Kirt Fitzpatrick ([@kirtfitzpatrick](https://github.com/kirtfitzpatrick))
+* Ben Hughes ([@barn](https://github.com/barn))
 
 ## Contributing
 

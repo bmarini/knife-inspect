@@ -78,7 +78,11 @@ module HealthInspector
       end
 
       def print_success(subject)
-        ui.msg color('bright pass', '✓') + " #{subject}"
+        if $stdout.tty?
+          ui.msg color('bright pass', "✓") + " #{subject}"
+        else
+          ui.msg "Success #{subject}"
+        end
       end
 
       def print_failures(subject, failures)

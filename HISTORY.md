@@ -1,8 +1,16 @@
+## 0.9.2 ( 2014-08-11 )
+
+* Bug fix: Fixed regression in the regression fix for Chef 10 that broke
+knife-inspect with Chef 11
+  ([#25][#25])
+
 ## 0.9.1 ( 2014-08-11 )
 
 * Bug fix: Fixed regression that broke knife-inspect with Chef 10.32.2
   (and probably previous Chef 10 versions)
   ([#25][#25])
+This release was yanked from RubyGems due to a bug. Please download 0.9.2
+instead.
 
 ## 0.9.0 ( 2014-08-11 )
 

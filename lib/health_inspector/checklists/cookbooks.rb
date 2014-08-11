@@ -1,5 +1,6 @@
+require 'chef/version'
 require 'chef/cookbook_version'
-require 'chef/checksum_cache' if Chef::VERSION.to_f < 11.0
+require 'chef/checksum_cache' if Chef::Version.new(Chef::VERSION) < Chef::Version.new('11.0.0')
 
 module HealthInspector
   module Checklists

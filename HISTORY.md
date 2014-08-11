@@ -1,4 +1,4 @@
-## 0.9.0 ( 2014-08-02 )
+## 0.9.0 ( 2014-08-11 )
 
 * Bug fix: update yajl-ruby dependency to 1.2, 1.1 segfaulted in some cases
   ([#22][#22])

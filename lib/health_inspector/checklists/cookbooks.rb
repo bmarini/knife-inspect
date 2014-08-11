@@ -38,6 +38,7 @@ module HealthInspector
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
             cookbook.manifest[segment].each do |manifest_record|
               path = cookbook_path.join("#{manifest_record['path']}")
+              next if path.basename.to_s == '.git'
 
               if path.exist?
                 checksum = checksum_cookbook_file(path)

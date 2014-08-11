@@ -1,6 +1,11 @@
 ## 0.9.0 ( 2014-08-02 )
 
 * Bug fix: update yajl-ruby dependency to 1.2, 1.1 segfaulted in some cases
+  ([#22][#22])
+* Feature: Make output not use unicode when stdout is not a TTY. (Ben Hughes)
+  ([#21][#21])
+* Bug fix: fix a bug with git submodules in some cases
+  ([#7][#7])
 
 ## 0.8.0 ( 2014-01-10 )
 
@@ -126,3 +131,6 @@
 [#14]: https://github.com/bmarini/knife-inspect/issues/14
 [#6]: https://github.com/bmarini/knife-inspect/issues/6
 [#2]: https://github.com/bmarini/knife-inspect/issues/2
+[#21]: https://github.com/bmarini/knife-inspect/issues/21
+[#22]: https://github.com/bmarini/knife-inspect/issues/22
+[#7]: https://github.com/bmarini/knife-inspect/issues/7

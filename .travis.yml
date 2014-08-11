@@ -7,3 +7,5 @@ env:
   - CHEF_VERSION=11.14.2
 before_script:
   - chef-client --version
+notifications:
+  email: false

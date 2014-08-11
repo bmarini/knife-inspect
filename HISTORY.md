@@ -1,3 +1,9 @@
+## 0.9.1 ( 2014-08-11 )
+
+* Bug fix: Fixed regression that broke knife-inspect with Chef 10.32.2
+  (and probably previous Chef 10 versions)
+  ([#25][#25])
+
 ## 0.9.0 ( 2014-08-11 )
 
 * Bug fix: update yajl-ruby dependency to 1.2, 1.1 segfaulted in some cases
@@ -134,3 +140,4 @@
 [#21]: https://github.com/bmarini/knife-inspect/issues/21
 [#22]: https://github.com/bmarini/knife-inspect/issues/22
 [#7]: https://github.com/bmarini/knife-inspect/issues/7
+[#25]: https://github.com/bmarini/knife-inspect/issues/25

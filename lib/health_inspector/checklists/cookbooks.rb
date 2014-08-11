@@ -1,3 +1,6 @@
+require 'chef/cookbook_version'
+require 'chef/checksum_cache' if Chef::VERSION.to_f < 11.0
+
 module HealthInspector
   module Checklists
     class Cookbook < Pairing

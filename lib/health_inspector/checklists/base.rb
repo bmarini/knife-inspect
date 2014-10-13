@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'pathname'
+require 'yajl'
 require 'parallel'
 
 module HealthInspector

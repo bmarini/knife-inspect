@@ -1,4 +1,5 @@
 require 'chef/data_bag'
+require 'yajl'
 
 module HealthInspector
   module Checklists

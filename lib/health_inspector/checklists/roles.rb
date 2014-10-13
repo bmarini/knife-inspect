@@ -1,5 +1,4 @@
 require 'chef/role'
-require 'yajl'
 
 module HealthInspector
   module Checklists

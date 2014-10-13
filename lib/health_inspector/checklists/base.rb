@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'pathname'
+require 'parallel'
 
 module HealthInspector
   module Checklists
@@ -38,19 +39,16 @@ module HealthInspector
         (server_items + local_items).uniq.sort
       end
 
-      def each_item
-        all_item_names.each do |name|
-          yield load_item(name)
-        end
+      def load_validate(name)
+        item = load_item(name)
+        validate_item(item)
       end
 
       def run
         banner "Inspecting #{self.class.title}"
 
-        results = []
-
-        each_item do |item|
-          results << validate_item(item)
+        results = Parallel.map(all_item_names) do |name|
+          load_validate(name)
         end
 
         !results.include?(false)

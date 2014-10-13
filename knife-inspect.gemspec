@@ -30,4 +30,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'chef',      chef_version
   s.add_runtime_dependency 'yajl-ruby', '~> 1.2'
+  s.add_runtime_dependency 'parallel', '~> 1.3'
 end

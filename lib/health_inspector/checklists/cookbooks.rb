@@ -1,5 +1,6 @@
 require 'chef/version'
 require 'chef/cookbook_version'
+require 'chef/cookbook_loader'
 require 'chef/checksum_cache' if Chef::Version.new(Chef::VERSION) < Chef::Version.new('11.0.0')
 
 module HealthInspector
@@ -104,18 +105,14 @@ module HealthInspector
       end
 
       def local_items
-        @context.cookbook_path
-          .map { |path| Dir["#{path}/*"] }
-          .flatten
-          .select { |path| File.exist?("#{path}/metadata.rb") }
-          .reduce({}) do |hsh, path|
+        cl = Chef::CookbookLoader.new(@context.cookbook_path)
+        cl.load_cookbooks
 
-            name    = File.basename(path)
-            version = (`grep '^version' #{path}/metadata.rb`).split.last[1...-1]
+        cl.inject({}) do |hash, (name, cookbook_version)|
+          hash[name] = Chef::Version.new(cookbook_version.version)
 
-            hsh[name] = Chef::Version.new(version)
-            hsh
-          end
+          hash
+        end
       end
 
       def all_item_names

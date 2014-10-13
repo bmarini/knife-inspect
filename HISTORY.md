@@ -1,3 +1,9 @@
+## 0.10.0 ( 2014-10-13 )
+
+* Feature: Support cookbooks that only have a `metadata.json` file but no
+  `metadata.rb` (Berkshelf does that) ([#5][#5])
+* Feature: Use parallel lib to speed up REST API operations ([#27][#27])
+
 ## 0.9.2 ( 2014-08-11 )
 
 * Bug fix: Fixed regression in the regression fix for Chef 10 that broke
@@ -149,3 +155,5 @@ instead.
 [#22]: https://github.com/bmarini/knife-inspect/issues/22
 [#7]: https://github.com/bmarini/knife-inspect/issues/7
 [#25]: https://github.com/bmarini/knife-inspect/issues/25
+[#5]: https://github.com/bmarini/knife-inspect/issues/5
+[#27]: https://github.com/bmarini/knife-inspect/issues/27

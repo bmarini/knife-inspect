@@ -97,6 +97,21 @@ RSpec.shared_examples 'a chef model that can be represented in json' do
     expect(pairing.errors.first).to eq(expected_errors)
   end
 
+  it 'detects differences when the other keys are identical' do
+    pairing.server = { 'name' => 'bar', 'foo' => { 'bar' => { 'fizz' => 'buzz' } } }
+    pairing.local  = { 'name' => 'bar', 'foo' => { 'baz' => { 'fizz' => 'buzz' } } }
+    pairing.validate
+
+    expect(pairing.errors).not_to be_empty
+    expected_errors = {
+      'foo' => {
+        'bar' => { 'server' => { 'fizz' => 'buzz' }, 'local' => nil },
+        'baz' => { 'server' => nil, 'local' => { 'fizz' => 'buzz' } }
+      }
+    }
+    expect(pairing.errors.first).to eq(expected_errors)
+  end
+
   it 'detects if an item is the same' do
     pairing.server = { 'foo' => 'bar' }
     pairing.local  = { 'foo' => 'bar' }

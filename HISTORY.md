@@ -1,3 +1,9 @@
+## 0.11.0 ( 2014-10-27 )
+
+* Bug fix: recursive diff would stop if two keys were identical between local
+  and server ([#23][#23])
+
+
 ## 0.10.0 ( 2014-10-13 )
 
 * Feature: Support cookbooks that only have a `metadata.json` file but no
@@ -157,3 +163,4 @@ instead.
 [#25]: https://github.com/bmarini/knife-inspect/issues/25
 [#5]: https://github.com/bmarini/knife-inspect/issues/5
 [#27]: https://github.com/bmarini/knife-inspect/issues/27
+[#23]: https://github.com/bmarini/knife-inspect/issues/23

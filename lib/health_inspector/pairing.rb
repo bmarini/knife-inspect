@@ -53,13 +53,13 @@ module HealthInspector
 
     def recursive_diff(original, other)
       (original.keys + other.keys).uniq.reduce({}) do |memo, key|
-        return memo if original[key] == other[key]
-
-        if original[key].is_a?(Hash) && other[key].is_a?(Hash)
-          diff = recursive_diff(original[key], other[key])
-          memo[key] = diff unless diff.empty?
-        else
-          memo[key] = { 'server' => original[key], 'local' => other[key] }
+        unless original[key] == other[key]
+          if original[key].is_a?(Hash) && other[key].is_a?(Hash)
+            diff = recursive_diff(original[key], other[key])
+            memo[key] = diff unless diff.empty?
+          else
+            memo[key] = { 'server' => original[key], 'local' => other[key] }
+          end
         end
 
         memo

@@ -88,8 +88,6 @@ module HealthInspector
     end
 
     class Cookbooks < Base
-      title 'cookbooks'
-
       def load_item(name)
         Cookbook.new(@context,
                      name: name,

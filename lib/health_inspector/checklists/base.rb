@@ -2,6 +2,7 @@
 require 'pathname'
 require 'yajl'
 require 'parallel'
+require 'inflecto'
 
 module HealthInspector
   module Checklists
@@ -9,15 +10,21 @@ module HealthInspector
       include Color
 
       class << self
-        attr_reader :title
-
-        def title(val = nil)
-          val.nil? ? @title : @title = val
+        def title
+          Inflecto.humanize(underscored_class).downcase
         end
       end
 
       def self.run(knife)
         new(knife).run
+      end
+
+      def self.option
+        Inflecto.dasherize(underscored_class).to_sym
+      end
+
+      def self.underscored_class
+        Inflecto.underscore(Inflecto.demodulize(self.to_s))
       end
 
       def initialize(knife)

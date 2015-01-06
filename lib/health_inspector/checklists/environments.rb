@@ -15,8 +15,6 @@ module HealthInspector
     end
 
     class Environments < Base
-      title 'environments'
-
       def load_item(name)
         Environment.new(@context,
                         name: name,

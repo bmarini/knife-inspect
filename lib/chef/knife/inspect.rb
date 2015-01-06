@@ -13,24 +13,32 @@ class Chef
 
       banner 'knife inspect'
 
-      CHECKLISTS.map do |checklist|
-        opt_name = checklist.downcase.to_sym
-        option opt_name,
-          :long => "--[no-]#{opt_name}",
+      CHECKLISTS.each do |checklist|
+        checklist = HealthInspector::Checklists.const_get(checklist)
+
+        option checklist.option,
+          :long => "--[no-]#{checklist.option}",
           :boolean => true,
           :default => true,
-          :description => "Add or exclude #{opt_name} from inspection"
+          :description => "Add or exclude #{checklist.title} from inspection"
       end
 
       def run
-        results = CHECKLISTS.select do |checklist|
-          opt_name = checklist.downcase.to_sym
-          config[opt_name] or config[opt_name].nil?
-        end.map do |checklist|
+        results = checklists_to_run.map do |checklist|
           HealthInspector::Checklists.const_get(checklist).run(self)
         end
 
         exit !results.include?(false)
+      end
+
+      private
+
+      def checklists_to_run
+        CHECKLISTS.select do |checklist|
+          checklist = HealthInspector::Checklists.const_get(checklist)
+
+          config[checklist.option]
+        end
       end
     end
   end

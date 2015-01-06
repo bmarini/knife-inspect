@@ -9,8 +9,6 @@ module HealthInspector
     end
 
     class DataBagItems < Base
-      title 'data bag items'
-
       def load_item(name)
         DataBagItem.new(@context,
                         name: name,

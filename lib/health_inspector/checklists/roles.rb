@@ -8,8 +8,6 @@ module HealthInspector
     end
 
     class Roles < Base
-      title 'roles'
-
       def load_item(name)
         Role.new(@context,
                  name: name,

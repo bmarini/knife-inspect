@@ -15,6 +15,15 @@ RSpec.describe Chef::Knife::Inspect do
       knife_inspect.run
     end
 
+    before do
+      # FIXME: Default config does not appear to be used by Chef 11
+      described_class::CHECKLISTS.each do |checklist|
+        checklist = HealthInspector::Checklists.const_get(checklist)
+
+        knife_inspect.config[checklist.option] = true
+      end
+    end
+
     context 'when all the checklists pass' do
       it 'runs all the check lists and exits with 0' do
         { HealthInspector::Checklists::Cookbooks => true,

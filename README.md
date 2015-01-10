@@ -18,7 +18,7 @@ or individual components.
 
     knife inspect
 
-    knife cookbook inspect
+    knife cookbook inspect [--no-cookbooks --no-data-bags --no-data-bag-items --no-environments --no-roles]
     knife cookbook inspect [COOKBOOK]
 
     knife data bag inspect
@@ -44,6 +44,15 @@ So far it checks if...
 * your data bag items are in sync
 * your environments are in sync
 * your roles are in sync
+
+You can use the option switches to disable checking for a resource type when
+running `knife inspect`:
+
+* `--no-cookbooks`
+* `--no-data-bags`
+* `--no-data-bag-items`
+* `--no-environments`
+* `--no-roles`
 
 You can use it with your favorite Continuous Integration tool, it returns 0
 when everything is in sync or 1 if it's not.

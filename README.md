@@ -67,6 +67,7 @@ when everything is in sync or 1 if it's not.
 * Kirt Fitzpatrick ([@kirtfitzpatrick](https://github.com/kirtfitzpatrick))
 * Ben Hughes ([@barn](https://github.com/barn))
 * Grégoire Seux ([@kamaradclimber](https://github.com/kamaradclimber))
+* Christian Höltje ([@docwhat](https://github.com/docwhat))
 
 ## Contributing
 

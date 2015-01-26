@@ -1,3 +1,9 @@
+## 0.11.1 ( 2015-01-26 )
+
+* Bug fix: Use `Gem::Version` to parse Chef's version ([#35][#35]) (thanks
+  @docwhat!)
+
+
 ## 0.11.0 ( 2014-10-27 )
 
 * Bug fix: recursive diff would stop if two keys were identical between local
@@ -164,3 +170,4 @@ instead.
 [#5]: https://github.com/bmarini/knife-inspect/issues/5
 [#27]: https://github.com/bmarini/knife-inspect/issues/27
 [#23]: https://github.com/bmarini/knife-inspect/issues/23
+[#35]: https://github.com/bmarini/knife-inspect/issues/35

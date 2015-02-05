@@ -1,3 +1,9 @@
+## 0.12.0 ( 2015-02-05 )
+
+* Bumped Chef compatibility to support Chef 12 ([#36][#36]). This is otherwise
+identical to 0.11.1
+
+
 ## 0.11.1 ( 2015-01-26 )
 
 * Bug fix: Use `Gem::Version` to parse Chef's version ([#35][#35]) (thanks

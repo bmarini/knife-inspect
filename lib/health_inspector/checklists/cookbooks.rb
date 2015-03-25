@@ -9,12 +9,15 @@ module HealthInspector
       include ExistenceValidations
 
       def validate_versions
+        Chef::Log.debug("#{name}: Validating versions")
+
         if versions_exist? && !versions_match?
           errors.add "chef server has #{server} but local version is #{local}"
         end
       end
 
       def validate_uncommited_changes
+        Chef::Log.debug("#{name}: Validating uncommited changes")
         return unless git_repo?
 
         result = `cd #{cookbook_path} && git status -s`
@@ -23,6 +26,7 @@ module HealthInspector
       end
 
       def validate_commits_not_pushed_to_remote
+        Chef::Log.debug("#{name}: Validating commits not pushed to remote")
         return unless git_repo?
 
         result = `cd #{cookbook_path} && git status`
@@ -34,19 +38,22 @@ module HealthInspector
 
       # TODO: Check files that exist locally but not in manifest on server
       def validate_changes_on_the_server_not_in_the_repo
+        Chef::Log.debug("#{name}: Validating changes on the server not in the repo")
+
         return unless versions_exist? && versions_match?
+        return if cookbook_path.nil?
 
         begin
-          cookbook = context.rest.get_rest("/cookbooks/#{name}/#{local}")
           messages = []
 
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
-            cookbook.manifest[segment].each do |manifest_record|
+            remote_cookbook.manifest[segment].each do |manifest_record|
               path = cookbook_path.join("#{manifest_record['path']}")
+              Chef::Log.debug("#{name}: Checking remote file #{manifest_record['path']}")
               next if path.basename.to_s == '.git'
 
               if path.exist?
-                checksum = checksum_cookbook_file(path)
+                checksum = Chef::CookbookVersion.checksum_cookbook_file(path)
                 messages << "#{manifest_record['path']}" if checksum != manifest_record['checksum']
               else
                 messages << "#{manifest_record['path']} does not exist in the repo"
@@ -65,6 +72,24 @@ module HealthInspector
         end
       end
 
+      def remote_files
+        return [] if remote_cookbook.nil?
+
+        @remote_files ||=
+          begin
+            remote_cookbook.manifest_records_by_path.keys
+          end
+      end
+
+      def remote_cookbook
+        @remote_cookbook ||=
+          begin
+            context.rest.get_rest("/cookbooks/#{name}/#{local}")
+          rescue Net::HTTPServerException
+            nil
+          end
+      end
+
       def versions_exist?
         local && server
       end
@@ -78,12 +103,11 @@ module HealthInspector
       end
 
       def cookbook_path
-        path = context.cookbook_path.find { |f| File.exist?("#{f}/#{name}") }
-        path ? Pathname.new(path).join(name) : nil
-      end
+        @cookbook_path ||= begin
+          path = context.cookbook_path.find { |f| File.exist?("#{f}/#{name}") }
 
-      def checksum_cookbook_file(filepath)
-        Chef::CookbookVersion.checksum_cookbook_file(filepath)
+          path ? Pathname.new(path).join(name) : nil
+        end
       end
     end
 

@@ -1,3 +1,9 @@
+## 0.13.1 ( 2016-02-16 )
+
+* Don't rely on deprecated auto-inflation of JSON data. Switch to `#from_hash`
+instead of `#json_create` for Chef resources
+
+
 ## 0.13.0 ( 2016-02-16 )
 
 * Fixed compatibility with Chef 12.7.2 ([#42][#42])

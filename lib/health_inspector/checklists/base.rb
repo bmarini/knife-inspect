@@ -134,9 +134,9 @@ module HealthInspector
           instance = chef_class.new
           instance.from_file(ruby_pathname.first.to_s)
         elsif !json_pathname.empty?
-          instance = chef_class.json_create(Yajl::Parser.parse(json_pathname.first.read))
+          instance = chef_class.from_hash(Yajl::Parser.parse(json_pathname.first.read))
         elsif !js_pathname.empty?
-          instance = chef_class.json_create(Yajl::Parser.parse(js_pathname.first.read))
+          instance = chef_class.from_hash(Yajl::Parser.parse(js_pathname.first.read))
         end
 
         instance ? instance.to_hash : nil

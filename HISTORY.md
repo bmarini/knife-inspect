@@ -1,3 +1,8 @@
+## 0.13.0 ( 2016-02-16 )
+
+* Fixed compatibility with Chef 12.7.2 ([#42][#42])
+
+
 ## 0.12.0 ( 2015-02-05 )
 
 * Bumped Chef compatibility to support Chef 12 ([#36][#36]). This is otherwise
@@ -177,3 +182,4 @@ instead.
 [#27]: https://github.com/bmarini/knife-inspect/issues/27
 [#23]: https://github.com/bmarini/knife-inspect/issues/23
 [#35]: https://github.com/bmarini/knife-inspect/issues/35
+[#42]: https://github.com/bmarini/knife-inspect/issues/42

@@ -1,13 +1,11 @@
 language: ruby
+cache: bundler
 rvm:
   - 2.1
   - 2.2
 env:
-  - CHEF_VERSION=10.34.6
-  - CHEF_VERSION=11.16.4
-  - CHEF_VERSION=12.0.3
-before_script:
-  - chef-client --version
+  - CHEF_VERSION=12.6.0
+  - CHEF_VERSION=12.7.2
 notifications:
   email: false
 sudo: false

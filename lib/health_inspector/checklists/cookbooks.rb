@@ -98,7 +98,7 @@ module HealthInspector
       end
 
       def server_items
-        Chef::CookbookVersion.list_all_versions.reduce({}) do |hsh, (name, version)|
+        Chef::CookbookVersion.list.reduce({}) do |hsh, (name, version)|
           hsh[name] = Chef::Version.new(version['versions'].first['version'])
           hsh
         end

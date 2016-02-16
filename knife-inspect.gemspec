@@ -25,13 +25,10 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake',      '~> 10.1'
   s.add_development_dependency 'rspec',     '~> 3.4.0'
-  s.add_development_dependency 'simplecov', '~> 0.8'
+  s.add_development_dependency 'simplecov', '~> 0.11'
   s.add_development_dependency 'coveralls', '~> 0.7'
 
   s.add_runtime_dependency 'chef',      chef_version
   s.add_runtime_dependency 'yajl-ruby', '~> 1.2'
   s.add_runtime_dependency 'parallel', '~> 1.3'
-
-  # s.cert_chain ['certs/gem-public_cert.pem']
-  # s.signing_key File.expand_path('~/.gem/secret/gem-private_key.pem') if $0 =~ /gem\z/
 end

@@ -37,7 +37,8 @@ module HealthInspector
         return unless versions_exist? && versions_match?
 
         begin
-          cookbook = Chef::CookbookVersion.load(name, local)
+          # Cast local (Chef::Version) into a string
+          cookbook = Chef::CookbookVersion.load(name, local.to_s)
           messages = []
 
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|

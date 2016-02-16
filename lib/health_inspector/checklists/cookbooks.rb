@@ -37,7 +37,7 @@ module HealthInspector
         return unless versions_exist? && versions_match?
 
         begin
-          cookbook = context.rest.get_rest("/cookbooks/#{name}/#{local}")
+          cookbook = Chef::CookbookVersion.load(name, local)
           messages = []
 
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
@@ -98,7 +98,7 @@ module HealthInspector
       end
 
       def server_items
-        @context.rest.get_rest('/cookbooks').reduce({}) do |hsh, (name, version)|
+        Chef::CookbookVersion.list_all_versions.reduce({}) do |hsh, (name, version)|
           hsh[name] = Chef::Version.new(version['versions'].first['version'])
           hsh
         end

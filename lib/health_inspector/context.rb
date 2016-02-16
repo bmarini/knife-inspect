@@ -12,10 +12,6 @@ module HealthInspector
       Array(Chef::Config.cookbook_path)
     end
 
-    def rest
-      @knife.rest
-    end
-
     def repo_path
       ENV['PWD']
     end

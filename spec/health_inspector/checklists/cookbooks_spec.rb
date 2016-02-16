@@ -12,9 +12,7 @@ RSpec.describe HealthInspector::Checklists::Cookbooks do
 
   describe '#server_items' do
     it 'returns a list of roles from the chef server' do
-      allow(health_inspector_context).to receive(:rest).and_return(double)
-      expect(health_inspector_context.rest).to receive(:get_rest)
-        .with('/cookbooks')
+      expect(Chef::CookbookVersion).to receive(:list_all_versions)
         .and_return(
           'cookbook_one' => { 'versions' => [{ 'version' => '1.0.0' }] },
           'cookbook_two' => { 'versions' => [{ 'version' => '0.0.1' }] }

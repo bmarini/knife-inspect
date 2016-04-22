@@ -16,7 +16,7 @@ RSpec.describe Chef::Knife::Inspect do
     end
 
     before do
-      # FIXME: Default config does not appear to be used by Chef 11
+      # FIXME: Default config does not appear to be used by Chef 11 & 12
       described_class::CHECKLISTS.each do |checklist|
         checklist = HealthInspector::Checklists.const_get(checklist)
 

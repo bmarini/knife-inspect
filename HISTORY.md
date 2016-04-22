@@ -1,3 +1,13 @@
+## 0.14.0 ( 2016-04-22 )
+
+* New feature: Allow to deactivate inspection by component ([#34][#34]). Thanks
+@kamaradclimber
+
+```
+--no-cookbooks --no-data-bags --no-data-bag-items --no-environments --no-roles
+```
+
+
 ## 0.13.1 ( 2016-02-16 )
 
 * Don't rely on deprecated auto-inflation of JSON data. Switch to `#from_hash`
@@ -189,3 +199,4 @@ instead.
 [#23]: https://github.com/bmarini/knife-inspect/issues/23
 [#35]: https://github.com/bmarini/knife-inspect/issues/35
 [#42]: https://github.com/bmarini/knife-inspect/issues/42
+[#34]: https://github.com/bmarini/knife-inspect/pull/34

@@ -66,6 +66,11 @@ when everything is in sync or 1 if it's not.
 * It's my personal opinion, but I think the output from knife-inspect is more readable. Also I don't understand some of the errors I'm getting with `knife diff` (`Only in .: clients` for example)
 * I actually didn't know there was a built-in `knife diff` command.
 
+## Compatibility
+
+This gem is tested with Ruby 2.1 and 2.2 and should be compatible with Chef
+10, 11 and 12.
+
 ## Contributors
 
 (in alphabetical order)
@@ -76,6 +81,7 @@ when everything is in sync or 1 if it's not.
 * Kirt Fitzpatrick ([@kirtfitzpatrick](https://github.com/kirtfitzpatrick))
 * Ben Hughes ([@barn](https://github.com/barn))
 * Grégoire Seux ([@kamaradclimber](https://github.com/kamaradclimber))
+* Christian Höltje ([@docwhat](https://github.com/docwhat))
 
 ## Contributing
 

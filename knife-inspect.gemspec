@@ -6,7 +6,7 @@ require "health_inspector/version"
 chef_version = if ENV.key?('CHEF_VERSION')
                  "= #{ENV['CHEF_VERSION']}"
                else
-                 ['>= 10', '<= 12']
+                 '>= 10.0.0'
                end
 
 Gem::Specification.new do |s|
@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.add_development_dependency 'rake',      '~> 10.1'
-  s.add_development_dependency 'rspec',     '~> 3.0.0'
-  s.add_development_dependency 'simplecov', '~> 0.8'
+  s.add_development_dependency 'rspec',     '~> 3.4.0'
+  s.add_development_dependency 'simplecov', '~> 0.11'
   s.add_development_dependency 'coveralls', '~> 0.7'
 
   s.add_runtime_dependency 'chef',      chef_version

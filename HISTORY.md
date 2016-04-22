@@ -1,3 +1,26 @@
+## 0.13.1 ( 2016-02-16 )
+
+* Don't rely on deprecated auto-inflation of JSON data. Switch to `#from_hash`
+instead of `#json_create` for Chef resources
+
+
+## 0.13.0 ( 2016-02-16 )
+
+* Fixed compatibility with Chef 12.7.2 ([#42][#42])
+
+
+## 0.12.0 ( 2015-02-05 )
+
+* Bumped Chef compatibility to support Chef 12 ([#36][#36]). This is otherwise
+identical to 0.11.1
+
+
+## 0.11.1 ( 2015-01-26 )
+
+* Bug fix: Use `Gem::Version` to parse Chef's version ([#35][#35]) (thanks
+  @docwhat!)
+
+
 ## 0.11.0 ( 2014-10-27 )
 
 * Bug fix: recursive diff would stop if two keys were identical between local
@@ -164,3 +187,5 @@ instead.
 [#5]: https://github.com/bmarini/knife-inspect/issues/5
 [#27]: https://github.com/bmarini/knife-inspect/issues/27
 [#23]: https://github.com/bmarini/knife-inspect/issues/23
+[#35]: https://github.com/bmarini/knife-inspect/issues/35
+[#42]: https://github.com/bmarini/knife-inspect/issues/42

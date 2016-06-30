@@ -1,15 +1,10 @@
 require 'chef/knife'
+require 'health_inspector'
 
 class Chef
   class Knife
     class Inspect < Knife
       CHECKLISTS = %w(Cookbooks DataBags DataBagItems Environments Roles)
-
-      # :nocov:
-      deps do
-        require 'health_inspector'
-      end
-      # :nocov:
 
       banner 'knife inspect'
 

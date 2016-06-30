@@ -1,14 +1,9 @@
 require 'chef/knife'
+require 'health_inspector'
 
 class Chef
   class Knife
     class DataBagInspect < Knife
-      # :nocov:
-      deps do
-        require 'health_inspector'
-      end
-      # :nocov:
-
       banner 'knife data bag inspect [BAG] [ITEM] (options)'
 
       def run

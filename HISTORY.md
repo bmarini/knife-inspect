@@ -1,3 +1,9 @@
+## 0.14.1 ( 2016-07-22 )
+
+* Bug fix: explicitly call the `HealthInspector` module with a root prefix
+  ([#46][#46]). This prevents a crash when running knife inspect in some cases
+
+
 ## 0.14.0 ( 2016-04-22 )
 
 * New feature: Allow to deactivate inspection by component ([#34][#34]). Thanks
@@ -200,3 +206,4 @@ instead.
 [#35]: https://github.com/bmarini/knife-inspect/issues/35
 [#42]: https://github.com/bmarini/knife-inspect/issues/42
 [#34]: https://github.com/bmarini/knife-inspect/pull/34
+[#46]: https://github.com/bmarini/knife-inspect/pull/46

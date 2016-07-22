@@ -6,7 +6,7 @@ require "health_inspector/version"
 chef_version = if ENV.key?('CHEF_VERSION')
                  "= #{ENV['CHEF_VERSION']}"
                else
-                 '>= 10.0.0'
+                 '>= 12.0.0'
                end
 
 Gem::Specification.new do |s|

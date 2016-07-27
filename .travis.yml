@@ -6,6 +6,7 @@ rvm:
 env:
   - CHEF_VERSION=12.6.0
   - CHEF_VERSION=12.7.2
+  - CHEF_VERSION=11.18.2
 notifications:
   email: false
 sudo: false

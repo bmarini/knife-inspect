@@ -142,18 +142,10 @@ module HealthInspector
           instance.from_file(ruby_pathname.first.to_s)
         elsif !json_pathname.empty?
           parsed_json = Yajl::Parser.parse(json_pathname.first.read)
-          if Chef::VERSION.start_with? "12"
-            instance = chef_class.from_hash(parsed_json)
-          else
-            instance = chef_class.json_create(parsed_json)
-          end
+          instance = load_instance_from(parsed_json, chef_class)
         elsif !js_pathname.empty?
           parsed_json = Yajl::Parser.parse(js_pathname.first.read)
-          if Chef::VERSION.start_with? "12"
-            instance = chef_class.from_hash(parsed_json)
-          else
-            instance = chef_class.json_create(parsed_json)
-          end
+          instance = load_instance_from(parsed_json, chef_class)
         end
 
         instance ? instance.to_hash : nil
@@ -163,6 +155,18 @@ module HealthInspector
 
       def indent(string, depth)
         (' ' * 2 * depth) + string
+      end
+
+      private
+
+      # This supports both Chef 11 and 12+ (assuming the public API still has
+      # #from_hash
+      def load_instance_from(parsed_json, chef_class)
+        if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12.0.0')
+          chef_class.json_create(parsed_json)
+        else
+          chef_class.from_hash(parsed_json)
+        end
       end
     end
   end

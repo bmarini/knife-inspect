@@ -1,6 +1,6 @@
 # encoding: UTF-8
 require 'pathname'
-require 'yajl'
+require 'ffi_yajl'
 require 'parallel'
 require 'inflecto'
 
@@ -141,10 +141,10 @@ module HealthInspector
           instance = chef_class.new
           instance.from_file(ruby_pathname.first.to_s)
         elsif !json_pathname.empty?
-          parsed_json = Yajl::Parser.parse(json_pathname.first.read)
+          parsed_json = FFI_Yajl::Parser.parse(json_pathname.first.read)
           instance = load_instance_from(parsed_json, chef_class)
         elsif !js_pathname.empty?
-          parsed_json = Yajl::Parser.parse(js_pathname.first.read)
+          parsed_json = FFI_Yajl::Parser.parse(js_pathname.first.read)
           instance = load_instance_from(parsed_json, chef_class)
         end
 

@@ -1,5 +1,5 @@
 require 'chef/data_bag'
-require 'yajl'
+require 'ffi_yajl'
 
 module HealthInspector
   module Checklists
@@ -48,8 +48,8 @@ module HealthInspector
         local_data_bag_item = Dir["#{@context.repo_path}/data_bags/**/#{name}.json"].first
         return nil if local_data_bag_item.nil?
 
-        Yajl::Parser.parse(File.read(local_data_bag_item))
-      rescue Yajl::ParseError
+        FFI_Yajl::Parser.parse(File.read(local_data_bag_item))
+      rescue FFI_Yajl::ParseError
         nil
       end
     end

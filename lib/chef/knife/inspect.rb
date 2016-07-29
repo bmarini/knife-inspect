@@ -1,20 +1,15 @@
 require 'chef/knife'
+require 'health_inspector'
 
 class Chef
   class Knife
     class Inspect < Knife
       CHECKLISTS = %w(Cookbooks DataBags DataBagItems Environments Roles)
 
-      # :nocov:
-      deps do
-        require 'health_inspector'
-      end
-      # :nocov:
-
       banner 'knife inspect'
 
       CHECKLISTS.each do |checklist|
-        checklist = HealthInspector::Checklists.const_get(checklist)
+        checklist = ::HealthInspector::Checklists.const_get(checklist)
 
         option checklist.option,
           :long => "--[no-]#{checklist.option}",
@@ -25,7 +20,7 @@ class Chef
 
       def run
         results = checklists_to_run.map do |checklist|
-          HealthInspector::Checklists.const_get(checklist).run(self)
+          ::HealthInspector::Checklists.const_get(checklist).run(self)
         end
 
         exit !results.include?(false)
@@ -35,7 +30,7 @@ class Chef
 
       def checklists_to_run
         CHECKLISTS.select do |checklist|
-          checklist = HealthInspector::Checklists.const_get(checklist)
+          checklist = ::HealthInspector::Checklists.const_get(checklist)
 
           config[checklist.option]
         end

@@ -4,9 +4,9 @@ require 'health_inspector'
 class Chef
   class Knife
     class EnvironmentInspect < Knife
-      include HealthInspector::Runner
+      include ::HealthInspector::Runner
 
-      checklist HealthInspector::Checklists::Environments
+      checklist ::HealthInspector::Checklists::Environments
       banner 'knife environment inspect [ENVIRONMENT] (options)'
     end
   end

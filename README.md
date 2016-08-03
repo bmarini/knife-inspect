@@ -68,9 +68,7 @@ when everything is in sync or 1 if it's not.
 
 ## Compatibility
 
-This gem is tested with Ruby 2.1 and 2.2 and as of version 0.14.0 is only
-compatible with Chef 12. For now use version 0.13.0 if you are still using Chef
-11.
+This gem is tested with Ruby 2.1 and 2.2 and has been tested with Chef 12 and Chef 11.
 
 ## Contributors
 

@@ -1,3 +1,10 @@
+## 0.15.0 ( 2016-08-03 )
+
+* New (old) feature: Chef 11 is supported again! ([#46][#46]). Thanks @kdaniels!
+* Updated development dependencies and set the version of rack to < 2
+* Switch to ffi-yajl like Chef
+
+
 ## 0.14.1 ( 2016-07-22 )
 
 * Bug fix: explicitly call the `HealthInspector` module with a root prefix

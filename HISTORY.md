@@ -1,3 +1,9 @@
+## 0.16.0 ( 2017-03-14 )
+
+* Remove explicit dependency on rack (let chef-zero deal with it) (([#50][#50])
+  Thanks for catching that @jonlives! I introduced the issue in 0.15.0
+
+
 ## 0.15.0 ( 2016-08-03 )
 
 * New (old) feature: Chef 11 is supported again! ([#46][#46]). Thanks @kdaniels!

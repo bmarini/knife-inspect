@@ -2,7 +2,6 @@ language: ruby
 cache: bundler
 rvm:
   - 2.3.3
-  - 2.4.0
 env:
   - CHEF_VERSION=12.19.36
   - CHEF_VERSION=12.7.2

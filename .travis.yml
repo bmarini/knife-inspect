@@ -1,10 +1,10 @@
 language: ruby
 cache: bundler
 rvm:
-  - 2.3.3
+  - 2.3.5
 env:
-  - CHEF_VERSION=12.19.36
-  - CHEF_VERSION=12.7.2
+  - CHEF_VERSION=13.6.4
+  - CHEF_VERSION=12.21.1
   - CHEF_VERSION=11.18.12
 notifications:
   email: false

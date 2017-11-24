@@ -42,7 +42,13 @@ module HealthInspector
           messages = []
 
           Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
-            cookbook.manifest[segment].each do |manifest_record|
+            manifest_records = if Gem::Version.new(Chef::VERSION) < Gem::Version.new('13.0.0')
+                                 # `files_for` was introduced in Chef 13
+                                 cookbook.manifest[segment]
+                               else
+                                 cookbook.files_for(segment)
+                               end
+            manifest_records.each do |manifest_record|
               path = cookbook_path.join("#{manifest_record['path']}")
               next if path.basename.to_s == '.git'
 

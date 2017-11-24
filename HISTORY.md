@@ -1,6 +1,11 @@
+## 0.16.1 ( 2017-11-24 )
+
+* Support Chef 13 ([#51][#51]). No other change.
+
+
 ## 0.16.0 ( 2017-03-14 )
 
-* Remove explicit dependency on rack (let chef-zero deal with it) (([#50][#50])
+* Remove explicit dependency on rack (let chef-zero deal with it) ([#50][#50])
   Thanks for catching that @jonlives! I introduced the issue in 0.15.0
 
 
@@ -220,3 +225,5 @@ instead.
 [#42]: https://github.com/bmarini/knife-inspect/issues/42
 [#34]: https://github.com/bmarini/knife-inspect/pull/34
 [#46]: https://github.com/bmarini/knife-inspect/pull/46
+[#50]: https://github.com/bmarini/knife-inspect/pull/50
+[#51]: https://github.com/bmarini/knife-inspect/pull/51

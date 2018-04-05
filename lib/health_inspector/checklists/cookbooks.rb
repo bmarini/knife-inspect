@@ -78,9 +78,7 @@ module HealthInspector
         begin
           # Cast local (Chef::Version) into a string
           cookbook_loader = Chef::Cookbook::CookbookVersionLoader.new(cookbook_path)
-          unless Gem::Version.new(Chef::VERSION) < Gem::Version.new('12.0.0')
-            cookbook_loader.load!
-	  end
+          cookbook_loader.load_cookbooks
           local_cookbook = cookbook_loader.cookbook_version
 
           remote_cookbook = Chef::CookbookVersion.load(name, local.to_s)

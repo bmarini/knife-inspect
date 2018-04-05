@@ -72,6 +72,55 @@ module HealthInspector
         end
       end
 
+      def validate_files_in_the_repo_not_on_the_server
+        return unless versions_exist? && versions_match?
+
+        begin
+          # Cast local (Chef::Version) into a string
+          cookbook_loader = Chef::Cookbook::CookbookVersionLoader.new(cookbook_path)
+          cookbook_loader.load!
+          local_cookbook = cookbook_loader.cookbook_version
+
+          remote_cookbook = Chef::CookbookVersion.load(name, local.to_s)
+
+          messages = []
+
+          Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+            local_manifest_records = if Gem::Version.new(Chef::VERSION) < Gem::Version.new('13.0.0')
+                                       # `files_for` was introduced in Chef 13
+                                       local_cookbook.manifest[segment]
+                                     else
+                                       local_cookbook.files_for(segment)
+                                     end
+            remote_manifest_records = if Gem::Version.new(Chef::VERSION) < Gem::Version.new('13.0.0')
+                                       # `files_for` was introduced in Chef 13
+                                       remote_cookbook.manifest[segment]
+                                     else
+                                       remote_cookbook.files_for(segment)
+                                     end
+
+            local_manifest_records.each do |local_manifest_record|
+              local_path = local_manifest_record['path']
+              remote_manifest_record = remote_manifest_records.find { |r| r['path'] == local_path }
+              unless remote_manifest_record.nil?
+                messages << "#{local_path}" if local_manifest_record['checksum'] != remote_manifest_record['checksum']
+              else
+                messages << "#{local_path} does not exist on the server"
+              end
+            end
+          end
+
+          unless messages.empty?
+            message = "has a checksum mismatch between server and repo in\n"
+            message << messages.map { |f| "    #{f}" }.join("\n")
+            errors.add message
+          end
+
+        rescue Net::HTTPServerException
+          errors.add "Could not find cookbook #{name} on the server"
+        end
+      end
+
       def versions_exist?
         local && server
       end

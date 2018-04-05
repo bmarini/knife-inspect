@@ -1,6 +1,7 @@
 require 'chef/version'
 require 'chef/cookbook_version'
 require 'chef/cookbook_loader'
+require 'chef/digester'
 require 'chef/checksum_cache' if Gem::Version.new(Chef::VERSION) < Gem::Version.new('11.0.0')
 
 module HealthInspector

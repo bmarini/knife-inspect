@@ -78,7 +78,7 @@ module HealthInspector
         begin
           # Cast local (Chef::Version) into a string
           cookbook_loader = Chef::Cookbook::CookbookVersionLoader.new(cookbook_path)
-          cookbook_loader.load!
+          cookbook_loader.load
           local_cookbook = cookbook_loader.cookbook_version
 
           remote_cookbook = Chef::CookbookVersion.load(name, local.to_s)

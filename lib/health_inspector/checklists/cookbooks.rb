@@ -33,7 +33,6 @@ module HealthInspector
         end
       end
 
-      # TODO: Check files that exist locally but not in manifest on server
       def validate_changes_on_the_server_not_in_the_repo
         return unless versions_exist? && versions_match?
 
@@ -103,18 +102,14 @@ module HealthInspector
             local_manifest_records.each do |local_manifest_record|
               local_path = local_manifest_record['path']
               remote_manifest_record = remote_manifest_records.find { |r| r['path'] == local_path }
-              unless remote_manifest_record.nil?
-                messages << "#{local_path}" if local_manifest_record['checksum'] != remote_manifest_record['checksum']
-              else
+              if remote_manifest_record.nil?
                 messages << "#{local_path} does not exist on the server"
               end
             end
           end
 
           unless messages.empty?
-            message = "has a checksum mismatch between server and repo in\n"
-            message << messages.map { |f| "    #{f}" }.join("\n")
-            errors.add message
+            errors.add messages.map { |m| "  #{m}" }.join("\n")
           end
 
         rescue Net::HTTPServerException

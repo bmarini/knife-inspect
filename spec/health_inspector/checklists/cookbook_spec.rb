@@ -107,6 +107,6 @@ RSpec.describe HealthInspector::Checklists::Cookbook do
     pairing.validate
 
     expect(pairing.errors).not_to be_empty
-    expect(pairing.errors.first).to eq("has a checksum mismatch between server and repo in\n    recipes/default.rb does not exist on the server")
+    expect(pairing.errors.first).to eq("  recipes/default.rb does not exist on the server")
   end
 end
